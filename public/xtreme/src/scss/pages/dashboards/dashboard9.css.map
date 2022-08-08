@@ -1,0 +1,10 @@
+{
+    "version": 3,
+    "mappings": "ACAA,iCAAiC;AAIjC,iCAAiC;AAEjC,OAAO,CAAC,8EAAI;AAIZ,gBAAgB;AAiBhB,iBAAiB;AAWjB,kBAAkB;AAelB,sBAAsB;AAMtB,UAAU;AASV,eAAe;AAMf,uBAAuB;AA0BvB,iCAAiC;AAIjC,iCAAiC;AAGjC;;;;;;;;;;;;;;;;GAgBG;ADtHH,AAAA,YAAY,CAAC,OAAO,CAAC;EACjB,MAAM,ECsIH,OAAO;CDrIb;;AAED,AAAA,YAAY,CAAC,OAAO,CAAC;EACjB,MAAM,EC2IH,OAAO;CD1Ib;;AAID,MAAM,EAAC,SAAS,EAAE,KAAK;EACnB,AAAA,OAAO,CAAC;IACJ,YAAY,EAAE,IAAI,CAAA,UAAU;GAC/B",
+    "sources": [
+        "dashboard9.scss",
+        "../../variable.scss"
+    ],
+    "names": [],
+    "file": "dashboard9.css"
+}
