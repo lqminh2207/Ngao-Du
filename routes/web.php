@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\DashController;
+use App\Http\Controllers\Admin\AdminController;
 
 
 Route::get('/', function () {
@@ -9,6 +11,14 @@ Route::get('/', function () {
 });
 
 Auth::routes();
+Route::post('sign-in', [AdminController::class, 'executeSignIn'])->name('execute.signin');
+
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
+    // Route::post('logout', [LogoutController::class, 'logout'])->name('logout');
+    
+    Route::get('/', [DashController::class, 'index'])->name('dashboard');
+
+});
 
 Route::get('/', function() {
     return view('clients.index');
@@ -32,3 +42,7 @@ Route::get('/slug', function() {
     return view('clients.slug-tour');
 })->name('slug');
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
