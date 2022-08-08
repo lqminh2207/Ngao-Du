@@ -91,7 +91,7 @@
                             <p>Pay securely—we use SSL encryption to keep your data safe</p>
                             <div class="checkbox-align">
                                 <input type="checkbox" id="data1" name="" value="" class="big">
-                                <label for="">Credit Card</label><br>
+                                <label for="">Stripe</label><br>
                                 <img class="credit-card" src="{{ asset('image/checkout/credit-card.png') }}" alt="credit_card">
                             </div>
                             <div class="checkbox-align">
