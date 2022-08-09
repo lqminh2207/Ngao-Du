@@ -6,10 +6,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Admin as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class Admin extends Authenticatable
 {
+    protected $table = "admins";
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -54,4 +56,15 @@ class Admin extends Authenticatable
     {
         return $this->whereEmail($email)->first();
     }   
+
+    public function storeData($request) 
+    {
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ];
+        
+        return $this->create($data);
+    }
 }
