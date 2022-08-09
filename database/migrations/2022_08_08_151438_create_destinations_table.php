@@ -16,6 +16,7 @@ class CreateDestinationsTable extends Migration
         Schema::create('destinations', function (Blueprint $table) {
             $table->integer('id', true);
             $table->string('title', 150);
+            $table->string('slug', 255);    
             $table->string('image', 150);
             $table->tinyInteger('status')->nullable()->default(1)->comment('1-show, 2-hide');
             $table->timestamps();

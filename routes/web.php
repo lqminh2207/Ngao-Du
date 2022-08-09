@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\DashController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\DestinationController;
+use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\LogoutController;
 
 Auth::routes();
@@ -20,6 +22,17 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     
     Route::get('/', [DashController::class, 'index'])->name('dashboard');
 
+    Route::resource('types', TypeController::class)->except(['show']);
+    Route::group(['prefix' => 'types', 'as' => 'types.'], function () {
+        Route::post('/getData', [TypeController::class, 'getData'])->name('getData');
+        Route::post('/changeStatus', [TypeController::class, 'changeStatus'])->name('changeStatus');
+    });
+
+    Route::resource('destinations', DestinationController::class)->except('show');
+    Route::group(['prefix' => 'destinations', 'as' => 'destinations.'], function () {
+        Route::post('/getData', [DestinationController::class, 'getData'])->name('getData');
+        Route::post('/changeStatus', [DestinationController::class, 'changeStatus'])->name('changeStatus');
+    });
 });
 
 Route::get('/', function() {
