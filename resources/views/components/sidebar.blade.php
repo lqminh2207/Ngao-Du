@@ -38,11 +38,11 @@
                 <li class="p-15 mt-2"><a href="javascript:void(0)" class="btn btn-block create-btn text-white no-block d-flex align-items-center"><i class="fa fa-plus-square"></i> <span class="hide-menu ml-1">Create New</span> </a></li>
                 <!-- User Profile-->
                 <li class="nav-small-cap"><i class="mdi mdi-dots-horizontal"></i> <span class="hide-menu">Ngao Du</span></li>
-                {{-- <li class="sidebar-item"><a href="{{ route('types.index') }}" class="sidebar-link"><i class="mdi mdi-view-quilt"></i><span class="hide-menu"> Types </span></a></li>
+                <li class="sidebar-item"><a href="{{ route('types.index') }}" class="sidebar-link"><i class="mdi mdi-view-quilt"></i><span class="hide-menu"> Types </span></a></li>
                 <li class="sidebar-item"><a href="{{ route('destinations.index') }}" class="sidebar-link"><i class="mdi mdi-code-equal"></i><span class="hide-menu"> Destinations </span></a></li>
-                <li class="sidebar-item"><a href="{{ route('tours.index') }}" class="sidebar-link"><i class="mdi mdi-dns"></i><span class="hide-menu"> Tours </span></a></li>
-                <li class="sidebar-item"><a href="{{ route('bookings.index') }}" class="sidebar-link"><i class="mdi mdi-cube-send"></i><span class="hide-menu"> Booking </span></a></li>
-                <li class="sidebar-item"><a href="{{ route('contacts.index') }}" class="sidebar-link"><i class="mdi mdi-creation"></i><span class="hide-menu"> Contact </span></a></li> --}}
+                {{-- <li class="sidebar-item"><a href="{{ route('tours.index') }}" class="sidebar-link"><i class="mdi mdi-dns"></i><span class="hide-menu"> Tours </span></a></li> --}}
+                {{-- <li class="sidebar-item"><a href="{{ route('bookings.index') }}" class="sidebar-link"><i class="mdi mdi-cube-send"></i><span class="hide-menu"> Booking </span></a></li> --}}
+                {{-- <li class="sidebar-item"><a href="{{ route('contacts.index') }}" class="sidebar-link"><i class="mdi mdi-creation"></i><span class="hide-menu"> Contact </span></a></li> --}}
             </ul>
         </nav>
         <!-- End Sidebar navigation -->
