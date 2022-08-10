@@ -31,6 +31,7 @@ class CreateToursTable extends Migration
             $table->text('additional')->nullable();
             $table->tinyInteger('is_interested')->nullable()->default(1)->comment('1-normal, 2-interested');
             $table->tinyInteger('is_culture')->nullable()->default(1)->comment('1-normal, 2-culture');
+            $table->tinyInteger('trending')->nullable()->default(1)->comment('1-show, 2-hide');
             $table->tinyInteger('status')->nullable()->default(1)->comment('1-show, 2-hide');
             $table->string('meta_title');
             $table->text('meta_description');

@@ -12,9 +12,19 @@ class AppModel extends Model
     const ACTIVE = 1;
     const INACTIVE = 2;
 
-    public function changeStatusModel($request) {
+    public function changeStatusModel($request) 
+    {
         $model = $this->find($request->id);
         $model->status = $request->status;
+        $data = $model->save();
+
+        return $data;
+    }
+
+    public function changeStatusModelTrending($request) 
+    {
+        $model = $this->find($request->id);
+        $model->trending = $request->trending;
         $data = $model->save();
 
         return $data;
