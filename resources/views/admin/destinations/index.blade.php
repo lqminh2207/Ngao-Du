@@ -97,7 +97,7 @@
             var status = $(this).prop('checked') == true ? 1 : 2;
             var id = $(this).data('id');
             $.ajax({
-                type: 'GET',
+                type: 'POST',
                 dataType: 'JSON',
                 url: '{{ route('destinations.changeStatus') }}',
                 data: {

@@ -33,6 +33,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::post('/getData', [DestinationController::class, 'getData'])->name('getData');
         Route::post('/changeStatus', [DestinationController::class, 'changeStatus'])->name('changeStatus');
     });
+
+    Route::resource('contacts', ContactController::class)->except('show');
+    Route::group(['prefix' => 'contacts', 'as' => 'contacts.'], function () {
+        Route::post('/getData', [ContactController::class, 'getData'])->name('getData');
+        Route::post('/changeStatus', [ContactController::class, 'changeStatus'])->name('changeStatus');
+    });
 });
 
 Route::get('/', function() {
