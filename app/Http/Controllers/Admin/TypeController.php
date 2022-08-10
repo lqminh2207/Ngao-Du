@@ -32,7 +32,7 @@ class TypeController extends Controller
     public function store(TypeRequest $request)
     {
         $data = $this->type->saveData($request);
-        return view('admin.types.index')->with('message', 'Destination successfully create');
+        return redirect()->route('types.index')->with('message', 'Destination successfully create');
     }
 
     public function getData(Request $request) 

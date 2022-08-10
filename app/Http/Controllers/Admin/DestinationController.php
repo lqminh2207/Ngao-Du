@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DestinationRequest;
 use App\Models\Destination;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DestinationController extends Controller
 {
@@ -31,13 +34,13 @@ class DestinationController extends Controller
     public function store(DestinationRequest $request)
     {
         $data = $this->destination->saveData($request);
-        return view('admin.types.index')->with('message', 'Destination successfully create');
+        return redirect()->route('destinations.index')->with('message', 'Destination successfully create');
     }
 
     public function getData(Request $request) 
     {
         if($request->ajax()) {
-            $this->destination->getDataAjax($request);
+            return $this->destination->getDataAjax($request);
         }
     }
 
@@ -61,7 +64,25 @@ class DestinationController extends Controller
             \abort(404);
         }
 
+        if ($data->image && Storage::exists('image')) {
+            Storage::delete($data->image);
+        }
+
         $data->delete();
         return redirect()->route('destinations.index')->with('message', 'Destination successfully deleted');
+    }
+
+    public function changeStatus(Request $request) {
+        try {
+            $this->destination->changeStatusModel($request);
+            
+            return response()->json([
+                'code' => 200,
+                'success' => true,
+                'message' => 'Status Changed Successfully',
+            ], 200);
+        } catch(Exception $exception) {
+            Log::error("Message:" . $exception->getMessage() . 'Line:' . $exception->getLine());
+        }
     }
 }

@@ -6,10 +6,12 @@ use App\Libraries\Ultilities;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Yajra\DataTables\Facades\DataTables;
+use App\Traits\StorageImageTrait;
 
-class Destination extends Model
+class Destination extends AppModel
 {
     use HasFactory;
+    use StorageImageTrait;
 
     protected $table = 'destinations';
 
@@ -49,8 +51,8 @@ class Destination extends Model
                 return view('action.action', [
                     'message' => null,
                     'url_show' => null,
-                    'url_edit' => route('types.edit', $item->id),
-                    'url_destroy' => route('types.destroy', $item->id),
+                    'url_edit' => route('destinations.edit', $item->id),
+                    'url_destroy' => route('destinations.destroy', $item->id),
                 ]);
             })
             ->rawColumns(['action', 'image', 'status'])
@@ -61,7 +63,10 @@ class Destination extends Model
         $input = $request->only(['title', 'slug', 'image', 'status']);
         $input['title'] = Ultilities::clearXSS($input['title']);
         $input['slug'] = Ultilities::clearXSS($input['slug']);
-        
+        $dataUploadImage = $this->storageTraitUpload($request, 'image', 'destinations');
+        if(!empty($dataUploadImage)) {
+            $input['image'] = $dataUploadImage['file_path'];
+        }
         $data = $this->create($input);
 
         return $data;
@@ -72,8 +77,17 @@ class Destination extends Model
         $input = $request->only(['title', 'slug', 'image', 'status']);
         $input['title'] = Ultilities::clearXSS($input['title']);
         $input['slug'] = Ultilities::clearXSS($input['slug']);
+        $dataUploadImage = $this->storageTraitUpload($request, 'image', 'destinations');
+        if(!empty($dataUploadImage)) {
+            $input['image'] = $dataUploadImage['file_path'];
+        }
         $data = $destination->update($input);
 
         return $data;
+    }
+
+    public function getImgAttribute() 
+    {
+        return asset('storage/destinations/' . $this->getRawOriginal('image'));
     }
 }
