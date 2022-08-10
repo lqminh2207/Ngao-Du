@@ -4,7 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\DashController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DestinationController;
+use App\Http\Controllers\Admin\ItineraryController;
+use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\LogoutController;
 
@@ -32,6 +35,23 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::group(['prefix' => 'destinations', 'as' => 'destinations.'], function () {
         Route::post('/getData', [DestinationController::class, 'getData'])->name('getData');
         Route::post('/changeStatus', [DestinationController::class, 'changeStatus'])->name('changeStatus');
+    });
+
+    Route::resource('tours', TourController::class)->except('show');
+    Route::group(['prefix' => 'tours'], function () {
+        Route::post('/getData', [TourController::class, 'getData'])->name('tours.getData');
+        Route::post('/changeStatus', [TourController::class, 'changeStatus'])->name('tours.changeStatus');
+        Route::post('/changeStatusTrending', [TourController::class, 'changeStatusTrending'])->name('tours.changeStatusTrending');
+    });
+
+    Route::group(['prefix' => 'tours/{tour_id}/itineraries', 'as' => 'itineraries.'], function () {
+        Route::post('/getData', [ItineraryController::class, 'getData'])->name('getData');
+        Route::get('', [ItineraryController::class, 'show'])->name('show');
+        Route::get('/create', [ItineraryController::class, 'create'])->name('create');
+        Route::post('/store', [ItineraryController::class, 'store'])->name('store');
+        Route::get('/edit/{itinerary_id}', [ItineraryController::class, 'edit'])->name('edit');
+        Route::post('/update/{itinerary_id}', [ItineraryController::class, 'update'])->name('update');
+        Route::post('/destroy/{itinerary_id}', [ItineraryController::class, 'destroy'])->name('destroy');
     });
 
     Route::resource('contacts', ContactController::class)->except('show');

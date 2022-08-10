@@ -22,16 +22,20 @@ class Destination extends AppModel
         'status'
     ];
 
+    public function tours() 
+    {
+        return $this->hasMany(Tour::class);
+    }
+
     public function getDataAjax($request) 
     {
-        $search = $request->search;
         $data = $this->latest();
 
         if(!empty($request->status)) {
             $data = $data->whereStatus($request->status);
         }   
 
-        if(!empty($search)) {
+        if(!empty($request->search)) {
             $search = Ultilities::clearXSS($request->search);
             $data->where(function ($result) use ($search) {
                 $result->where('title', 'like', '%' . $search . '%')
@@ -44,10 +48,10 @@ class Destination extends AppModel
             ->addColumn('image', function ($data){
                 return '<img src="'.$data->img.'" alt="" width="120" height="120">';
             })
-            ->editColumn('status', function($data) {
+            ->editColumn('status', function ($data) {
                 return view('action.switch', ['checked' => $data->status, 'id' => $data->id]);
             })
-            ->addColumn('action', function($item) {
+            ->addColumn('action', function ($item) {
                 return view('action.action', [
                     'message' => null,
                     'url_show' => null,
