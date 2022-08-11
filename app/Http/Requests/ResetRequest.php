@@ -26,7 +26,7 @@ class ResetRequest extends FormRequest
         return [
             'email' => 'required|string|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/|max:100|exists:admins,email|',
             'password' => 'required|string|min:6|max:32',
-            'confirm_password' => 'required|same:password'
+            'confirm_password' => 'required'
         ];
     }
 }

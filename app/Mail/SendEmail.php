@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Http\Request;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -17,9 +18,10 @@ class SendEmail extends Mailable
      *
      * @return void
      */
-    public function __construct($details)
+    public function __construct($details, $token)
     {
         $this->details = $details;
+        $this->token = $token;
     }
 
     /**
@@ -30,6 +32,7 @@ class SendEmail extends Mailable
     public function build()
     {
         $details = $this->details;
-        return $this->view('sendEmail', compact('details'));
+        $token = $this->token;
+        return $this->view('sendEmail', compact('details', 'token'));
     }
 }

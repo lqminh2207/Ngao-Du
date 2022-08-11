@@ -9,10 +9,15 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetRequest;
 use App\Jobs\SendEmailJob;
+use App\Mail\SendEmail;
 use App\Models\Admin;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 class AdminController extends Controller
 {
     public function executeSignIn(LoginRequest $request) 
@@ -41,24 +46,58 @@ class AdminController extends Controller
     {
         $details = $request->email;
         try {
-            dispatch(new SendEmailJob($details));
-            return 'Please check your email';
+            // Cách 1 dispatch cho vào queue tránh bị quá tải
+            // dispatch(new SendEmailJob($details));
+            // Cách 2 không nên dùng
+            $token = Str::random(64);
+            DB::table('password_resets')->where('email', $request->email)->delete();
+            DB::table('password_resets')->insert([
+                'email' => $request->email,
+                'token' => Hash::make($token),
+                'created_at' => Carbon::now()
+            ]);
+            $email = new SendEmail($details, $token);
+            Mail::to($details)->send($email);
+
+            return back()->with('message', 'We have e-mailed your password reset link!');
         } catch(\Exception $exception) {
-            return back()->with('status', 'We have emailed your password reset link!');
+            dd($exception);
+            return Log::error("Message:" . $exception->getMessage() . 'Line:' . $exception->getLine());
         }
     }
 
-    public function formReset(Request $request) 
+    public function formReset(Request $request, $token) 
     {
         $email = $request->email;
-        return view('auth.passwords.reset', compact('email'));
+        return view('auth.passwords.reset', ['token' => $token], compact('email'));
     }
 
-    public function Reset(ResetRequest $request, Admin $admin) 
+    public function Reset(ResetRequest $request) 
     {
-        $admin = Admin::where('email', $request->email)->first();
-        $admin->password = Hash::make($request->password);
-        $admin->save();
-        return redirect('login')->with('status', 'Successful changed password');
+        // $admin = Admin::where('email', $request->email)->first();
+        // $admin->password = Hash::make($request->password);
+        // $admin->save();
+        $oldPass = DB::table('admins')->where([
+            'password' => $request->password
+        ]);
+
+        $passwordReset = DB::table('password_resets')->where([
+            'email' => $request->email
+        ])->first();
+
+        if (!$passwordReset) {
+            return back()->with('error', 'This password reset token is invalid.');
+        }
+        
+        if (! Hash::check($request->token, $passwordReset->token)) {
+            return back()->with('error', 'This password reset token is invalid.');
+        }
+
+        $updatePassword = Admin::where('email', $request->email)->update(['password' => Hash::make($request->password)]);
+
+        $passwordReset = DB::table('password_resets')->where([
+        ])->delete();   
+
+        return redirect('login')->with('message', 'Your password has been changed!');
     }
 }

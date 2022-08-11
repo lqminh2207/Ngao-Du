@@ -1,1 +1,1 @@
-<h3><a href="{{ route('form.reset', ['email' => $details])}}">Click to reset password</a></h3>
+<h3><a href="{{ route('form.reset', ['email' => $details, 'token' => $token])}}">Click to reset password</a></h3>

@@ -51,7 +51,7 @@
                         <div class="col-12">
                             <form class="form-horizontal m-t-20" method="POST" action="{{ route('reset') }}">
                                 @csrf
-                                {{-- <input type="hidden" name="token" value="{{ $request->route('token') }}"> --}}
+                                <input type="hidden" name="token" value="{{ $token }}">
                                 <div class="form-group row">
                                     <div class="col-12">
                                         <input class="form-control form-control-lg" name="email" type="email" placeholder="Email" value="{{ $email }}">
