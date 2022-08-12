@@ -30,9 +30,87 @@
                             <option value="2">Block</option>
                         </select>
                     </div>
+                    
                     <div class="col-5">
                         <div class="text-right col-md-7 ml-auto p-r-0">
-                            <a href="{{ route('destinations.create') }}" class="btn btn-info btn-create text-white">Create destination</a>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+                                Create destination
+                            </button>
+                              
+                              <!-- Modal -->
+                            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="staticBackdropLabel">Create Destination</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <form method="post" action="{{ route('destinations.store') }}" enctype="multipart/form-data" id="insert_data">
+                                        <div class="modal-body" style="text-align: left;">
+                                            @csrf
+                                            <div class="form-group" >
+                                                <label for="exampleInputTitle">Title <span style="color: red">*</span></label>
+                                                <input type="text" class="form-control" onkeyup="ChangeToTitle()" id="title"
+                                                    value="{{ old('title') }}" name="title"
+                                                    placeholder="Title destination" maxlength="100">
+                                                    @if ($errors->has('title'))
+                                                    <span class="text-danger">
+                                                        <small>{{ $errors->first('title') }}</small>
+                                                    </span>
+                                                    @endif
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleInputSlug">Slug <span style="color: red">*</span></label>
+                                                <input type="text" class="form-control" onkeyup="ChangeToSlug()" id="slug"
+                                                    value="{{ old('slug') }}" name="slug"
+                                                    placeholder="Slug destination" maxlength="255">
+                                                    @if ($errors->has('slug'))
+                                                    <span class="text-danger">
+                                                        <small>{{ $errors->first('slug') }}</small>
+                                                    </span>
+                                                    @endif
+                                            </div>
+                                        
+                                            <div class="form-group ">
+                                                <label for="exampleInputEmail1">Image <span style="color: red">*</span></label>
+                                                {{-- style="height: 100px" id="show_image" --}}
+                                                <div class="col-md-4 feature_image_container">
+                                                    {{-- style="height: 100%;" --}}
+                                                    <div class="row">
+                                                        {{-- style="height: 100%;" --}}
+                                                        {{-- h-100 --}}
+                                                        <img id="img" class="feature_image d-block w-100 " src="" alt="">
+                                                    </div>
+                                                </div>
+                                                <input id="image" type="file" class="form-control-file mt-4" name="image" accept='image/*'
+                                                    onchange='openFile1(event)'>
+                                                @if ($errors->has('image'))
+                                                <span class="text-danger">
+                                                    <small>{{ $errors->first('image') }}</small>
+                                                </span>
+                                                @endif
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="exampleStatus">Status <span style="color: red">*</span></label>
+                                                <br>
+                                                <input type="radio" name="status" style="margin: 0 15px" id="status_active" value="1"
+                                                    checked {{ old('status') == '1' ? 'checked' : '' }}> Active
+                                                <input type="radio" name="status" style="margin: 0 15px" id="block" value="2"
+                                                    {{ old('status') == '2' ? 'checked' : '' }}> Inactive
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Create</button>
+                                        </div>
+                                    </form>
+                                  </div>
+                                </div>
+                            </div>
+                            {{-- <a href="{{ route('destinations.create') }}" class="btn btn-info btn-create text-white">Create destination</a> --}}
                         </div>
                     </div>
                 </div>

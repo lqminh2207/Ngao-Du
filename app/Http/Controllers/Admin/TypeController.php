@@ -21,6 +21,9 @@ class TypeController extends Controller
     public function index()
     {
         return view('admin.types.index');
+        // $type = Type::all();
+
+        // return view('admin.types.index', ['type' => $type]);
     }
 
 
@@ -31,8 +34,15 @@ class TypeController extends Controller
 
     public function store(TypeRequest $request)
     {
-        $data = $this->type->saveData($request);
-        return redirect()->route('types.index')->with('message', 'Destination successfully create');
+        $this->type->saveData($request);
+
+        // check lỗi
+        // if($request->failedValidation()){
+        //     return response()->json($request->errors(), 422);
+        // }
+        
+        // return redirect()->route('types.index')->with('message', 'Tour type successfully create');
+        return response()->json(['message' => 'Tour type successfully create']);
     }
 
     public function getData(Request $request) 
@@ -51,7 +61,9 @@ class TypeController extends Controller
     public function update(TypeRequest $request, $id)
     {
         $this->type->updateData($request, $id);
-        return redirect()->route('types.index')->with('message', 'Type tour successfully updated');
+        // return redirect()->route('types.index')->with('message', 'Type tour successfully updated');
+        return response()->json(['message' => 'Tour type successfully edited']);
+
     }
 
 
