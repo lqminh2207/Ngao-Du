@@ -41,7 +41,10 @@ class Type extends AppModel
                 return view('action.action', [
                     'message' => null,
                     'url_show' => null,
-                    'url_edit' => route('types.edit', $item->id),
+                    'data_old_info' => $item,
+                    // 'url_edit' => route('types.edit', $item->id),
+                    'url_edit' => null,
+                    'url_edit_modal' => route('types.edit', $item->id),
                     'url_destroy' => route('types.destroy', $item->id),
                 ]);
             })

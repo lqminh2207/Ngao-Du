@@ -39,17 +39,10 @@
                     <div class="form-group">
                         <label for="exampleStatus">Status <span style="color: red">*</span></label>
                         <br>
-                        @if ($type->status == 1)
-                            <input type="radio" name="status" style="margin: 0 15px"  value="1"
-                            checked {{ old('status') == '1' ? 'checked' : '' }}> Active
-                            <input type="radio" name="status" style="margin: 0 15px" id="block" value="2"
-                                {{ old('status') == '2' ? 'checked' : '' }}> Inactive
-                        @elseif($type->status == 2)
-                            <input type="radio" name="status" style="margin: 0 15px"  value="1"
-                            {{ old('status') == '1' ? 'checked' : '' }}> Active
-                            <input type="radio" checked  name="status" style="margin: 0 15px" value="2"
-                                {{ old('status') == '2' ? 'checked' : '' }}> Inactive
-                        @endif
+                        <input type="radio" name="status" style="margin: 0 15px"  value="1"
+                        checked {{ $type->status == '1' ? 'checked' : '' }}> Active
+                        <input type="radio" name="status" style="margin: 0 15px" id="block" value="2"
+                        {{ $type->status == '2' ? 'checked' : '' }}> Inactive
                     </div>
                     <button type="submit" name="add_typetour" class="btn btn-primary" id="button_type">Save</button>
                 </form>

@@ -36,7 +36,46 @@
                             </div>
                             <div class="col-4">
                                 <div class="text-right col-md-7 ml-auto p-r-0">
-                                    <a href="{{ route('types.create') }}" class="btn btn-info btn-create text-white">Create types of tour</a>
+                                    <button type="button" class="btn btn-primary btn-create" id="btn-create" data-toggle="modal" data-target="#staticBackdrop" id="CreateTypeModal">
+                                        Create types of tour
+                                    </button>
+                                      
+                                      <!-- Modal -->
+                                    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                          <div class="modal-content">
+                                            <div class="modal-header">
+                                              <h5 class="modal-title" id="staticBackdropLabel">Create types of tour</h5>
+                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                              </button>
+                                            </div>
+                                            
+                                            <div class="modal-body" style="text-align: left;">
+                                                <div class="form-group">
+                                                    <label for="exampleInputTitle">Title<span style="color: red">*</span></label>
+                                                    <input type="text" class="form-control" onkeyup="ChangeToSlug()" id="title"
+                                                        value="{{ old('title') }}" name="title"
+                                                        placeholder="Title type of tour" maxlength="100">
+                                                            <p id="errorTitle" class="text-danger"></p>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="exampleStatus">Status<span style="color: red">*</span></label>
+                                                    <br>
+                                                    <input type="radio" name="status" style="margin: 0 15px" id="status_active" value="1"
+                                                        checked {{ old('status') == '1' ? 'checked' : '' }}> Active
+                                                    <input type="radio" name="status" style="margin: 0 15px" id="block" value="2"
+                                                        {{ old('status') == '2' ? 'checked' : '' }}> Inactive
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" id="btn-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button id="type_sub" type="submit" class="btn btn-primary">Create</button>
+                                            </div>
+                                          </div>
+                                        </div>
+                                    </div>
+                                    {{-- <a href="{{ route('types.create') }}" class="btn btn-info btn-create text-white">Create types of tour</a> --}}
                                 </div>
                             </div>
                         </div>
@@ -55,6 +94,42 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="edit-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Create types of tour</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            
+            <div class="modal-body" style="text-align: left;">
+                <div class="form-group">
+                    <label for="exampleInputTitle">Title <span style="color: red">*</span></label>
+                    <input type="text" class="form-control title" onkeyup="ChangeToSlug()" id="title"
+                        value="{{ old('title') }}" name="title"
+                        placeholder="Title type of tour" maxlength="100">
+                        <p class="text-danger"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="exampleStatus">Status<span style="color: red">*</span></label>
+                    <br>
+                    <input type="radio" name="status" style="margin: 0 15px" id="status_active" value="1"
+                    checked {{ old('status') == '1' ? 'checked' : '' }}>Active
+                <input type="radio" name="status" style="margin: 0 15px" id="block" value="2"
+                    {{ old('status') == '2' ? 'checked' : '' }}>Inactive
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="type_sub" type="submit" class="btn btn-primary">Save change</button>
+            </div>
+          </div>
         </div>
     </div>
 @endsection
@@ -88,6 +163,63 @@
             $('#status').on('change', function() {
                 datatables.draw();
             })
+        })
+    </script>
+
+    <script>
+        function resetForm() {
+            $('#title').val(''),
+            $('#status_active').prop('checked', true);
+
+            $('#errorTitle').text('');
+        }
+
+        $('.btn-create').click(function(e) {
+            $('#type_sub').prop('disabled', false);
+            resetForm()
+        })
+
+        $('#type_sub').click(function(e) {
+            $('#errorTitle').text('');
+
+            let status = 1;
+            if($('#block').is(":checked")) {
+                status = 2;
+            }
+            $('#type_sub').prop('disabled', true);
+            
+            $.ajax({
+                type: 'POST',
+                dataType: 'JSON',
+                url: '{{ route('types.store') }}',
+                data: { 
+                    'title': $('#title').val(),
+                    'status': status
+                },
+
+                success: function(response) {
+                    $('#myTable').DataTable().ajax.reload();
+                    $('#btn-close').click();
+                    toastr.success(response.message);
+                    resetForm();
+                },
+
+                error: function(xhr) {
+                    if (xhr.responseJSON.errors) {
+                        $('#errorTitle').text(xhr.responseJSON.errors.title);
+                    }
+                    $('#type_sub').attr('disabled', false);
+
+                    toastr.error(xhr.responseJSON.message);
+                },
+            });
+        });
+
+        $(document).on('click', '.btn-edit', function(e) {
+            let data = $(this).data('old-info')
+            console.log(data.status)
+            $('.title').val(data.title)
+            $("input[name='status']").filter(`[value="${data.status}"]`).attr('checked', true);
         })
     </script>
 

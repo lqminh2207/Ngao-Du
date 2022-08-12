@@ -26,7 +26,44 @@
                     </div>
                     <div class="col-8">
                         <div class="text-right col-md-7 ml-auto p-r-0">
-                            <a href="{{ route('itineraries.create', $tour_id) }}" class="btn btn-info btn-create text-white">Create Itinerary</a>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
+                                Create Itinerary
+                            </button>
+                              
+                              <!-- Modal -->
+                            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title" id="staticBackdropLabel">Create Itinerary</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <form method="post" action="{{ route('types.store') }}" enctype="multipart/form-data" id="insert_data">
+                                        <div class="modal-body" style="text-align: left;">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label for="exampleInputTitle">Title <span style="color: red">*</span></label>
+                                                <input type="text" class="form-control" onkeyup="ChangeToTitle()" id="title"
+                                                    value="{{ old('title') }}" name="title"
+                                                    placeholder="Your title" maxlength="255">
+                                                    @if ($errors->has('title'))
+                                                    <span class="text-danger">
+                                                        <small>{{ $errors->first('title') }}</small>
+                                                    </span>
+                                                    @endif
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Create</button>
+                                        </div>
+                                    </form>
+                                  </div>
+                                </div>
+                            </div>
+                            {{-- <a href="{{ route('itineraries.create', $tour_id) }}" class="btn btn-info btn-create text-white">Create Itinerary</a> --}}
                         </div>
                     </div>
                     <input type="hidden" id="tour_id" value="{{ $tour_id }}">
