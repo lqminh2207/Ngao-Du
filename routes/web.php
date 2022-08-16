@@ -27,12 +27,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     Route::resource('types', TypeController::class)->except(['show']);
     Route::group(['prefix' => 'types', 'as' => 'types.'], function () {
+        Route::get('/{id}/show', [TypeController::class, 'show'])->name('show');
         Route::post('/getData', [TypeController::class, 'getData'])->name('getData');
         Route::post('/changeStatus', [TypeController::class, 'changeStatus'])->name('changeStatus');
     });
 
     Route::resource('destinations', DestinationController::class)->except('show');
     Route::group(['prefix' => 'destinations', 'as' => 'destinations.'], function () {
+        Route::get('/{id}/show', [DestinationController::class, 'show'])->name('show');
         Route::post('/getData', [DestinationController::class, 'getData'])->name('getData');
         Route::post('/changeStatus', [DestinationController::class, 'changeStatus'])->name('changeStatus');
     });
@@ -46,12 +48,13 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'tours/{tour_id}/itineraries', 'as' => 'itineraries.'], function () {
         Route::post('/getData', [ItineraryController::class, 'getData'])->name('getData');
+        Route::get('showInfo', [ItineraryController::class, 'showInfo'])->name('showInfo');
         Route::get('', [ItineraryController::class, 'show'])->name('show');
         Route::get('/create', [ItineraryController::class, 'create'])->name('create');
         Route::post('/store', [ItineraryController::class, 'store'])->name('store');
         Route::get('/edit/{itinerary_id}', [ItineraryController::class, 'edit'])->name('edit');
         Route::post('/update/{itinerary_id}', [ItineraryController::class, 'update'])->name('update');
-        Route::post('/destroy/{itinerary_id}', [ItineraryController::class, 'destroy'])->name('destroy');
+        Route::delete('/destroy', [ItineraryController::class, 'destroy'])->name('destroy');
     });
 
     Route::resource('contacts', ContactController::class)->except('show');

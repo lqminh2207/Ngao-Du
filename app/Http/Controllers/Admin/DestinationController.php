@@ -24,6 +24,15 @@ class DestinationController extends Controller
         return view('admin.destinations.index');
     }
 
+    public function show(Request $request, $id) 
+    {
+        $destination = $this->destination->find($id);
+
+        return response()->json([
+            'destination' => $destination
+        ]);
+    }
+
 
     public function create()
     {
@@ -33,8 +42,11 @@ class DestinationController extends Controller
 
     public function store(DestinationRequest $request)
     {
-        $data = $this->destination->saveData($request);
-        return redirect()->route('destinations.index')->with('message', 'Destination successfully create');
+        $this->destination->saveData($request);
+
+        return response()->json([
+            'message' => 'Destination successfuly created'
+        ]);
     }
 
     public function getData(Request $request) 
@@ -53,7 +65,10 @@ class DestinationController extends Controller
     public function update(DestinationRequest $request, $id)
     {
         $this->destination->updateData($request, $id);
-        return redirect()->route('destinations.index')->with('message', 'Destination successfully updated');
+
+        return response()->json([
+            'message' => 'Destination successfuly updated'
+        ]);
     }
 
     public function destroy($id)

@@ -26,6 +26,13 @@ class TypeController extends Controller
         // return view('admin.types.index', ['type' => $type]);
     }
 
+    public function show(Request $request, $id) {
+        $type = $this->type->find($id);
+        
+        return response()->json([
+            'type' => $type,
+        ]);
+    }
 
     public function create()
     {

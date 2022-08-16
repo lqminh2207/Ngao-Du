@@ -27,6 +27,10 @@ class Itinerary extends AppModel
     {
         $data = $this->latest();
 
+        if (!empty($request->tour_id)) {
+            $data = $data->whereTourId($request->tour_id);
+        }
+
         if(!empty($request->search)) {
             $search = Ultilities::clearXSS($request->search);
             $data->where(function ($result) use ($search) {
@@ -38,22 +42,22 @@ class Itinerary extends AppModel
             ->addIndexColumn()
             ->addColumn('action', function ($data) {
                 return view('action.action', [
-                    'message' => null,
-                    'url_show' => null,
-                    'url_edit' => route('itineraries.edit', $data->id),
+                    'model' => $data,
+                    'id' => $data->id,
+                    'edit_modal' => route('itineraries.edit', [$data->tour_id, $data->id]),
                     'url_destroy' => route('itineraries.destroy', $data->id),
                 ]);
             })
 
-            ->rawColumns(['action', 'status'])
+            ->rawColumns(['action'])
             ->make(true);
     }
 
     public function saveData($request)
     {
-        $input = $request->only('type_id', 'title');
-        $input['tour_id'] =  !empty($id) ? Ultilities::clearXSS($id) : '';
-        $input['title'] =  !empty($id) ? Ultilities::clearXSS($id) : '';
+        $input = $request->only('tour_id', 'title');
+        $input['tour_id'] =  !empty($request->tour_id) ? Ultilities::clearXSS($request->tour_id) : '';
+        $input['title'] =  !empty($request->title) ? Ultilities::clearXSS($request->title) : '';
         $data = $this->create($input);
 
         return $data;
@@ -61,11 +65,10 @@ class Itinerary extends AppModel
 
     public function updateData($request, $id)
     {
-        $itinerary = $this->find($id);
-        $input = $request->only('type_id', 'title');
-        $input['tour_id'] =  !empty($id) ? Ultilities::clearXSS($id) : '';
-        $input['title'] =  !empty($id) ? Ultilities::clearXSS($id) : '';
-        $data = $itinerary->update($input);
+        // $itinerary = $this->find($id); tai sao viet the nay lai ra tour_id
+        $itinerary = $this->find($request->id);
+        $input['title'] =  !empty($request->title) ? Ultilities::clearXSS($request->title) : '';
+        $data = $itinerary->update($input);   
 
         return $data;
     }
