@@ -12,7 +12,12 @@
 @endif
 @if (!empty($url_edit_modal))
     <button type="button" data-toggle="modal" data-target="#edit-modal" class="btn btn-info waves-effect waves-light btn-sm btn-edit" 
-        data-url-update="{{ $url_edit_modal }}" data-old-info="{{ $data_old_info }}"
+        data-id="{{ $id }}"
+        title="Edit"><i class="fas fa-edit"></i></button>
+@endif
+@if (!empty($edit_modal))
+    <button type="button" data-toggle="modal" data-target="#staticBackdrop" class="btn btn-info waves-effect waves-light btn-sm btn-edit" 
+        data-id="{{ $id }}"
         title="Edit"><i class="fas fa-edit"></i></button>
 @endif
 @if (!empty($url_destroy))

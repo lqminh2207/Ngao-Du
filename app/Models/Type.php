@@ -39,9 +39,9 @@ class Type extends AppModel
             })
             ->addColumn('action', function($item) {
                 return view('action.action', [
-                    'message' => null,
+                    'id' => $item->id,
                     'url_show' => null,
-                    'data_old_info' => $item,
+                    // 'data_old_info' => $item,
                     // 'url_edit' => route('types.edit', $item->id),
                     'url_edit' => null,
                     'url_edit_modal' => route('types.edit', $item->id),

@@ -38,7 +38,7 @@
                         <div class="form-group">
                             <label for="exampleInputSlug">Slug <span style="color: red">*</span></label>
                             <input type="text" class="form-control" onkeyup="ChangeToSlug()" id="slug"
-                                value="{{ $destination->slug }}" name="slug"
+                                value="{{ $destination->slug }}" name="slug" disabled
                                 placeholder="Slug destination" maxlength="255">
                                 @if ($errors->has('slug'))
                                 <span class="text-danger">

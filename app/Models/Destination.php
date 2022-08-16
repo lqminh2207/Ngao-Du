@@ -51,12 +51,13 @@ class Destination extends AppModel
             ->editColumn('status', function ($data) {
                 return view('action.switch', ['checked' => $data->status, 'id' => $data->id]);
             })
-            ->addColumn('action', function ($item) {
+            ->addColumn('action', function ($data) {
                 return view('action.action', [
-                    'message' => null,
-                    'url_show' => null,
-                    'url_edit' => route('destinations.edit', $item->id),
-                    'url_destroy' => route('destinations.destroy', $item->id),
+                    'id' => $data->id,
+                    // 'url_show' => null,
+                    'url_edit' => null,
+                    'edit_modal' => route('destinations.edit', $data->id),
+                    'url_destroy' => route('destinations.destroy', $data->id),
                 ]);
             })
             ->rawColumns(['action', 'image', 'status'])

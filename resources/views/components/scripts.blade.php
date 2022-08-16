@@ -135,13 +135,7 @@
 {{-- end toastr --}}
 {{-- ck editor --}}
 <script src="{{ asset('xtreme/assets/libs/ckeditor/ckeditor.js') }}"></script>
-<script> 
-    CKEDITOR.replace('editor1');
-    CKEDITOR.replace('editor2'); 
-    CKEDITOR.replace('editor3'); 
-    CKEDITOR.replace('editor4'); 
-    CKEDITOR.replace('editor5'); 
-</script>
+
 <script src="{{ asset('js/template.js') }}"></script>
 {{-- Destroy record --}}
 <script type="text/javascript">removeData('.btn-delete', '#datatable', '', true, "")</script>

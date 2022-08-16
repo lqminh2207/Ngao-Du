@@ -54,7 +54,7 @@
                                             <div class="modal-body" style="text-align: left;">
                                                 <div class="form-group">
                                                     <label for="exampleInputTitle">Title<span style="color: red">*</span></label>
-                                                    <input type="text" class="form-control" onkeyup="ChangeToSlug()" id="title"
+                                                    <input type="text" class="form-control" id="title"
                                                         value="{{ old('title') }}" name="title"
                                                         placeholder="Title type of tour" maxlength="100">
                                                             <p id="errorTitle" class="text-danger"></p>
@@ -62,7 +62,7 @@
                                                 <div class="form-group">
                                                     <label for="exampleStatus">Status<span style="color: red">*</span></label>
                                                     <br>
-                                                    <input type="radio" name="status" style="margin: 0 15px" id="status_active" value="1"
+                                                    <input type="radio" name="status" style="margin: 0 15px" id="status_active1" value="1"
                                                         checked {{ old('status') == '1' ? 'checked' : '' }}> Active
                                                     <input type="radio" name="status" style="margin: 0 15px" id="block" value="2"
                                                         {{ old('status') == '2' ? 'checked' : '' }}> Inactive
@@ -70,7 +70,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" id="btn-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button id="type_sub" type="submit" class="btn btn-primary">Create</button>
+                                                <button id="type_create" type="submit" class="btn btn-primary">Create</button>
                                             </div>
                                           </div>
                                         </div>
@@ -101,33 +101,34 @@
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="staticBackdropLabel">Create types of tour</h5>
+              <h5 class="modal-title" id="staticBackdropLabel">Edit types of tour</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             
             <div class="modal-body" style="text-align: left;">
+                <input type="text" id="edit_id" value="{{ old('id') }}" hidden>
                 <div class="form-group">
-                    <label for="exampleInputTitle">Title <span style="color: red">*</span></label>
-                    <input type="text" class="form-control title" onkeyup="ChangeToSlug()" id="title"
+                    <label for="exampleInputTitle">Title<span style="color: red">*</span></label>
+                    <input type="text" class="form-control title" id="title"
                         value="{{ old('title') }}" name="title"
                         placeholder="Title type of tour" maxlength="100">
-                        <p class="text-danger"></p>
+                        <p class="text-danger error-title"></p>
                 </div>
                 
                 <div class="form-group">
                     <label for="exampleStatus">Status<span style="color: red">*</span></label>
                     <br>
-                    <input type="radio" name="status" style="margin: 0 15px" id="status_active" value="1"
+                    <input type="radio" name="status" style="margin: 0 15px" id="status_active2"value="1"
                     checked {{ old('status') == '1' ? 'checked' : '' }}>Active
-                <input type="radio" name="status" style="margin: 0 15px" id="block" value="2"
+                    <input type="radio" name="status" style="margin: 0 15px" id="block" class="block" value="2"
                     {{ old('status') == '2' ? 'checked' : '' }}>Inactive
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="btn-close" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="type_sub" type="submit" class="btn btn-primary">Save change</button>
+                <button type="button" id="btn-close" class="btn btn-secondary btn-close" data-dismiss="modal">Close</button>
+                <button id="type_edit" type="submit" class="btn btn-primary">Save change</button>
             </div>
           </div>
         </div>
@@ -169,24 +170,25 @@
     <script>
         function resetForm() {
             $('#title').val(''),
-            $('#status_active').prop('checked', true);
+            $('#status_active1').prop('checked', true);
 
             $('#errorTitle').text('');
         }
 
         $('.btn-create').click(function(e) {
-            $('#type_sub').prop('disabled', false);
+            $('#type_create').prop('disabled', false);
             resetForm()
         })
-
-        $('#type_sub').click(function(e) {
+        
+        // Create Type tour ajax
+        $('#type_create').click(function(e) {
             $('#errorTitle').text('');
 
             let status = 1;
             if($('#block').is(":checked")) {
                 status = 2;
             }
-            $('#type_sub').prop('disabled', true);
+            $('#type_create').prop('disabled', true);
             
             $.ajax({
                 type: 'POST',
@@ -208,7 +210,52 @@
                     if (xhr.responseJSON.errors) {
                         $('#errorTitle').text(xhr.responseJSON.errors.title);
                     }
-                    $('#type_sub').attr('disabled', false);
+                    
+                    $('#type_create').attr('disabled', false);
+
+                    toastr.error(xhr.responseJSON.message);
+                },
+            });
+        });
+
+        // Edit Type tour ajax
+        $('#type_edit').click(function(e) {
+            $('.error-title').text('');
+            
+            let status = 1;
+            if($('.block').is(":checked")) {
+                status = 2;
+            }
+            
+                let type_id = $('#edit_id').val();
+                let url = '{{ route('types.update', ":id") }}';
+                // console.log(url);
+                url = url.replace(':id', type_id);
+                // console.log(url);
+
+            $('#type_edit').prop('disabled', true);
+            $.ajax({
+                type: 'PUT',
+                dataType: 'JSON',
+                url: url,
+                data: { 
+                    'id': $('#edit_id').val(),
+                    'title': $('.title').val(),
+                    'status': status
+                },
+
+                success: function(response) {
+                    $('#myTable').DataTable().ajax.reload();
+                    $('.btn-close').click();
+                    toastr.success(response.message);
+                    resetForm();
+                },
+
+                error: function(xhr) {
+                    if (xhr.responseJSON.errors) {
+                        $('.error-title').text(xhr.responseJSON.errors.title);
+                    }
+                    $('#type_edit').attr('disabled', false);
 
                     toastr.error(xhr.responseJSON.message);
                 },
@@ -216,10 +263,30 @@
         });
 
         $(document).on('click', '.btn-edit', function(e) {
-            let data = $(this).data('old-info')
-            console.log(data.status)
-            $('.title').val(data.title)
-            $("input[name='status']").filter(`[value="${data.status}"]`).attr('checked', true);
+            $('#type_edit').prop('disabled', false);
+            $('.error-title').text('');
+
+            let id = $(this).data('id')
+            // console.log(data.status)
+            
+            let url = '{{ route('types.show', ":id") }}';
+            url = url.replace(':id', id);
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: url,
+
+                success: function(response) {
+                    // console.log(response);
+                    $('#edit_id').val(response.type.id)
+                    $('.title').val(response.type.title)
+                    $('.block').prop('checked', true);
+                    if(response.type.status == 1) {
+                        $('#status_active2').prop('checked', true);
+                    }
+                },
+            });
         })
     </script>
 
