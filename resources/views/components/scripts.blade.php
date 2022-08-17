@@ -28,21 +28,21 @@
 <!--Menu sidebar -->
 <script src="{{ asset('xtreme/dist/js/sidebarmenu.js') }}"></script>
 <!--Custom JavaScript -->
-<script src="{{ asset('xtreme/dist/js/custom.min.js') }}"></script>
+<script src="{{ asset('xtreme/dist/js/custom.js') }}"></script>
 <script src="{{ asset('xtreme/assets/libs/bootstrap-switch/dist/js/bootstrap-switch.min.js') }}"></script>
 <script src="{{ asset('xtreme/assets/extra-libs/DataTables/datatables.min.js') }}"></script>
 <script src="{{ asset('xtreme/dist/js/pages/datatable/datatable-basic.init.js') }}"></script>
 <!--This page JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <!--chartis chart-->
-<script src="{{ asset('xtreme/assets/libs/chartist/dist/chartist.min.js') }}"></script>
-<script src="{{ asset('xtreme/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js') }}"></script>
+{{-- <script src="{{ asset('xtreme/assets/libs/chartist/dist/chartist.min.js') }}"></script> --}}
+{{-- <script src="{{ asset('xtreme/assets/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js') }}"></script> --}}
 <!--c3 charts -->
 <script src="{{ asset('xtreme/assets/extra-libs/c3/d3.min.js') }}"></script>
 <script src="{{ asset('xtreme/assets/extra-libs/c3/c3.min.js') }}"></script>
 <!--chartjs -->
-<script src="{{ asset('xtreme/assets/libs/chart.js/dist/Chart.min.js') }}"></script>
-<script src="{{ asset('xtreme/dist/js/pages/dashboards/dashboard1.js') }}"></script>
+{{-- <script src="{{ asset('xtreme/assets/libs/chart.js/dist/Chart.min.js') }}"></script>
+<script src="{{ asset('xtreme/dist/js/pages/dashboards/dashboard1.js') }}"></script> --}}
 <script src="{{ asset('js/admin.js') }}"></script>
 
 {{-- toastr --}}

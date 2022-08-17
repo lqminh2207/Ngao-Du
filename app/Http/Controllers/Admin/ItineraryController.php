@@ -26,8 +26,8 @@ class ItineraryController extends Controller
     }
 
     public function showInfo(Request $request, $id) 
-    {
-        $itinerary = $this->itinerary->find($id);
+    {   
+        $itinerary = $this->itinerary->find($request->id);
 
         return response()->json([
             'itinerary' => $itinerary

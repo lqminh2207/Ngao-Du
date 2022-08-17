@@ -53,9 +53,24 @@ class Tour extends AppModel
         return $this->belongsTo(Type::class, 'type_id', 'id');
     }
 
-    public function itinerary() 
+    public function itineraries() 
     {
         return $this->hasMany(Itinerary::class);
+    }
+
+    public function faqs() 
+    {
+        return $this->hasMany(Faq::class);
+    }
+
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
     }
 
     public function getDataAjax($request) 
@@ -137,9 +152,9 @@ class Tour extends AppModel
             ->addColumn('details', function($data) {
                 return view('action.info_tour', [
                     'itineraries' => route('itineraries.show', [$data->id]),
-                    // 'faqs' => route('faqs.show', [$data->id]),
-                    // 'galleries' => route('galleries.show', $data->id),
-                    // 'rates' => route('rates.show', $data->id)
+                    'faqs' => route('faqs.show', [$data->id]),
+                    'galleries' => route('galleries.show', $data->id),  
+                    'reviews' => route('reviews.show', $data->id)
                 ]);
             })
             ->rawColumns(['action', 'title', 'image', 'overview', 'include', 'departure', 'additional', 'status', 'trending', 'duration'])

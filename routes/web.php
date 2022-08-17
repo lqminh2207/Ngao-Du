@@ -6,7 +6,11 @@ use App\Http\Controllers\Admin\DashController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DestinationController;
+use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ItineraryController;
+use App\Http\Controllers\Admin\PlaceController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\TypeController;
 use App\Http\Controllers\LogoutController;
@@ -37,6 +41,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::get('/{id}/show', [DestinationController::class, 'show'])->name('show');
         Route::post('/getData', [DestinationController::class, 'getData'])->name('getData');
         Route::post('/changeStatus', [DestinationController::class, 'changeStatus'])->name('changeStatus');
+        // Route::post('/update/{destination_id}', [DestinationController::class, 'update'])->name('update');
     });
 
     Route::resource('tours', TourController::class)->except('show');
@@ -48,13 +53,50 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     Route::group(['prefix' => 'tours/{tour_id}/itineraries', 'as' => 'itineraries.'], function () {
         Route::post('/getData', [ItineraryController::class, 'getData'])->name('getData');
-        Route::get('showInfo', [ItineraryController::class, 'showInfo'])->name('showInfo');
+        Route::get('{id}/showInfo', [ItineraryController::class, 'showInfo'])->name('showInfo');
         Route::get('', [ItineraryController::class, 'show'])->name('show');
         Route::get('/create', [ItineraryController::class, 'create'])->name('create');
         Route::post('/store', [ItineraryController::class, 'store'])->name('store');
         Route::get('/edit/{itinerary_id}', [ItineraryController::class, 'edit'])->name('edit');
         Route::post('/update/{itinerary_id}', [ItineraryController::class, 'update'])->name('update');
         Route::delete('/destroy', [ItineraryController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::group(['prefix' => 'tours/{tour_id}/itineraries/{itineraries_id}/places', 'as' => 'places.'], function () {
+        Route::post('/getData', [PlaceController::class, 'getData'])->name('getData');
+        Route::get('{id}/showInfo', [PlaceController::class, 'showInfo'])->name('showInfo');
+        Route::get('', [PlaceController::class, 'show'])->name('show');
+        Route::get('/create', [PlaceController::class, 'create'])->name('create');
+        Route::post('/store', [PlaceController::class, 'store'])->name('store');
+        Route::get('/edit/{place_id}', [PlaceController::class, 'edit'])->name('edit');
+        Route::post('/update/{place_id}', [PlaceController::class, 'update'])->name('update');
+    });
+    Route::delete('{itineraries_id}/destroy/{id}', [PlaceController::class, 'destroy'])->name('places.destroy');
+
+    Route::group(['prefix' => 'tours/{tour_id}/faqs', 'as' => 'faqs.'], function () {
+        Route::post('/getData', [FaqController::class, 'getData'])->name('getData');
+        Route::get('{id}/showInfo', [FaqController::class, 'showInfo'])->name('showInfo');
+        Route::get('', [FaqController::class, 'show'])->name('show');
+        Route::get('/create', [FaqController::class, 'create'])->name('create');
+        Route::post('/store', [FaqController::class, 'store'])->name('store');
+        Route::get('/edit/{faq_id}', [FaqController::class, 'edit'])->name('edit');
+        Route::post('/update/{faq_id}', [FaqController::class, 'update'])->name('update');
+        Route::delete('/destroy', [FaqController::class, 'destroy'])->name('destroy');
+        Route::post('/changeStatus', [FaqController::class, 'changeStatus'])->name('changeStatus');
+    });
+
+    Route::group(['prefix' => 'tours/{tour_id}/galleries', 'as' => 'galleries.'], function () {
+        Route::get('', [GalleryController::class, 'show'])->name('show');
+        Route::post('/store', [GalleryController::class, 'store'])->name('store');
+        Route::delete('{id}/destroy', [GalleryController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::group(['prefix' => 'tours/{tour_id}/reviews', 'as' => 'reviews.'], function () {
+        Route::post('/getData', [ReviewController::class, 'getData'])->name('getData');
+        Route::get('', [ReviewController::class, 'show'])->name('show');
+        Route::post('/store', [ReviewController::class, 'store'])->name('store');
+        Route::delete('{id}/destroy', [ReviewController::class, 'destroy'])->name('destroy');
+        Route::post('/changeStatus', [ReviewController::class, 'changeStatus'])->name('changeStatus');
     });
 
     Route::resource('contacts', ContactController::class)->except('show');
@@ -82,7 +124,3 @@ Route::get('/thanks', function() {
 Route::get('/layout', function () {
     return view('layouts.template');
 });
-
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

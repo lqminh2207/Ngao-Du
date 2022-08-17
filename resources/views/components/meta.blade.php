@@ -85,5 +85,46 @@
             border-radius: 50%;
         }
 
+        /* custom upload button */
+        .wrapper-upload{
+            background-color:#2590EB;
+            width: 120px;
+            height: 80px;
+            border-radius: 10px;
+            display:flex;
+            align-items:center;
+            position:relative;
+            justify-content:center;
+            cursor: pointer;
+            margin: auto;
+        }
+        .wrapper-upload .file-upload{
+            height: 50px;
+            width: 50px;
+            border-radius: 100px;
+            display:flex;
+            justify-content:center;
+            align-items: center;  
+            border: 4px solid #FFFFFF;
+            background-image: linear-gradient(to bottom, #2590EB 50%, #FFFFFF 50%);
+            background-size: 100% 200%;
+            transition: all 1s;
+            color: #FFFFFF;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        .wrapper-upload .file-upload input[type='file']{
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            opacity:0;
+            cursor: pointer;
+        }
+        .wrapper-upload .file-upload:hover{
+            background-position: 0 -100%;
+            color:#2590EB;
+        }
     </style>
 </head>
