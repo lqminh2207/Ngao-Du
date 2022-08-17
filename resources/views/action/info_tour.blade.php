@@ -10,6 +10,6 @@
 @if (!empty($galleries))
     <a href="{{ $galleries }}" class="btn btn-info waves-effect waves-light btn-sm mt-1" title="Delete">Galleries</a>
 @endif
-@if (!empty($rates))
-    <a href="{{ $rates }}" class="btn btn-info waves-effect waves-light btn-sm mt-1" title="Delete">Rates</a>
+@if (!empty($reviews))
+    <a href="{{ $reviews }}" class="btn btn-info waves-effect waves-light btn-sm mt-1" title="Delete">Reviews</a>
 @endif

@@ -79,6 +79,7 @@ class Destination extends AppModel
 
     public function updateData($request, $id) {
         $destination = $this->find($id);
+        // dd($request);
         $input = $request->only(['title', 'slug', 'image', 'status']);
         $input['title'] = Ultilities::clearXSS($input['title']);
         $input['slug'] = Ultilities::clearXSS($input['slug']);

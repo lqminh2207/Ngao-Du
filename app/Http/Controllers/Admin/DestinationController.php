@@ -62,8 +62,10 @@ class DestinationController extends Controller
         return view('admin.destinations.edit', compact('destination'));
     }
 
+    // DestinationRequest
     public function update(DestinationRequest $request, $id)
     {
+        // dd($request->all());
         $this->destination->updateData($request, $id);
 
         return response()->json([

@@ -127,7 +127,7 @@
             document.getElementById('btn-submit').classList.add('d-none')
 
             let id = $(this).data('id')
-            let url = '{{ route('itineraries.showInfo', ":id") }}'
+            let url = '{{ route('itineraries.showInfo', [$tour_id, ":id"]) }}'
             url = url.replace(':id', id)
 
             $.ajax({
@@ -136,6 +136,7 @@
                 url: url,
                 
                 success: function(response) {
+                    console.log(response);
                     $('#edit_id').val(response.itinerary.id)
                     $('#tour_id').val(response.itinerary.tour_id)
                     $('#title').val(response.itinerary.title)

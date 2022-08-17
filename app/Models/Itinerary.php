@@ -23,6 +23,11 @@ class Itinerary extends AppModel
         return $this->belongsTo(Tour::class, 'tour_id', 'id');
     }
 
+    public function places()
+    {
+        return $this->hasMany(Place::class);
+    }
+
     public function getDataAjax($request) 
     {
         $data = $this->latest();
@@ -44,6 +49,7 @@ class Itinerary extends AppModel
                 return view('action.action', [
                     'model' => $data,
                     'id' => $data->id,
+                    'url_show' => route('places.show', [$data->tour_id, $data->id]),
                     'edit_modal' => route('itineraries.edit', [$data->tour_id, $data->id]),
                     'url_destroy' => route('itineraries.destroy', $data->id),
                 ]);
