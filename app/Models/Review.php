@@ -60,7 +60,8 @@ class Review extends AppModel
             })
             ->addColumn('action', function ($data) {
                 return view('action.action', [
-                    'url_destroy' => route('rates.destroy', [$data->id])
+                    'model' => $data,
+                    'url_destroy' => route('reviews.destroy', [$data->id])
                 ]);
             })
 
@@ -68,9 +69,8 @@ class Review extends AppModel
             ->make(true);
     }
 
-    public function saveData($request, $id) 
+    public function saveData($request) 
     {
-        $input = $request->only('tour_id', 'star', 'message');
         $input['tour_id'] = !empty($request->tour_id) ? Ultilities::clearXSS($request->tour_id) : '';
         $input['star'] = !empty($request->star) ? Ultilities::clearXSS($request->star) : '';
         $input['message'] = !empty($request->message) ? Ultilities::clearXSS($request->message) : '';

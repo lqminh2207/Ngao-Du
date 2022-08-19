@@ -25,12 +25,12 @@ class ReviewController extends Controller
         return view('admin.reviews.index', compact('tour_id'));
     }
 
-    public function store(Request $request, $tour_id)
+    public function store(Request $request)
     {
-        $request->validate($this->rate->rules());
-        $this->review->saveData($request, $tour_id);
+        $request->validate($this->review->rules());
+        $this->review->saveData($request);
 
-        return redirect()->back()->with('message', 'Your review has been successfuly sent');
+        return redirect()->back()->withInput()->with('message', 'Your review has been successfuly sent');
     }
 
     public function getData(Request $request)
@@ -45,7 +45,7 @@ class ReviewController extends Controller
     {
         $review = $this->review->find($id);
 
-        if(!empty($review)) {
+        if(empty($review)) {
             \abort(404);    
         }
 

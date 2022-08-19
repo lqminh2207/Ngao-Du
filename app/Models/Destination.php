@@ -96,4 +96,11 @@ class Destination extends AppModel
     {
         return asset('storage/destinations/' . $this->getRawOriginal('image'));
     }
+
+    // client
+
+    public function getDestinationHomepage()
+    {
+        return $this->whereStatus(self::ACTIVE)->latest()->take(8)->withCount('tours')->get();
+    }
 }

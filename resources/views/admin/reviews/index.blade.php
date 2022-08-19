@@ -22,6 +22,16 @@
         <div class="container-fluid">
             <div class="row mb-3" style="padding-top:8px;">
                 <input type="hidden" id="tour_id" value="{{ $tour_id }}">
+                <div class="col-4">
+                    <input type="text" id="filter_search" value="{{old('filter_search')}}" class="form-control" placeholder="Search">
+                </div>
+                <div class="col-3">
+                    <select id="status" class="form-control select2-hide-search" style="width:100%; height:36px;">
+                        <option value="">All</option>
+                        <option value="1">Show</option>
+                        <option value="2">Hide</option>
+                    </select>
+                </div>
             </div>
             <div class="table-responsive hide-search-datatable custom-table">
                 <table class="table table-striped table-bordered data-table w-100" id="myTable" >

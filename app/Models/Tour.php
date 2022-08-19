@@ -73,6 +73,11 @@ class Tour extends AppModel
         return $this->hasMany(Review::class);
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
     public function getDataAjax($request) 
     {
         $data = $this->latest();
@@ -145,9 +150,9 @@ class Tour extends AppModel
                 if ($data->duration == 1) 
                     return 'A day';
                 else if ($data->duration == 2) 
-                    return $data->duration . 'days' . $data->duration - 1 . 'night';
+                    return $data->duration . ' days ' . $data->duration - 1 . ' night';
                 else
-                    return $data->duration . 'days' . $data->duration - 1 . 'nights';
+                    return $data->duration . ' days ' . $data->duration - 1 . ' nights';
             })
             ->addColumn('details', function($data) {
                 return view('action.info_tour', [
@@ -190,17 +195,6 @@ class Tour extends AppModel
             'meta_description' => $request->meta_description,
         ]);
 
-        // $data = $this->clearXSSArr([
-        //     'overview' => $request->overview,
-        //     'include' => $request->overviincludeew,
-        //     'departure' => $request->departure,
-        //     'map' => $request->map,
-        //     'image_360' => $request->image_360,
-        //     'video' => $request->video,
-        //     'additional' => $request->additional,
-        //     'is_interested' => $request->is_interested,
-        //     'is_culture' => $request->is_culture
-        // ]);
         $data['overview'] = $request->overview;
         $data['include'] = $request->include;
         $data['departure'] = $request->departure;
@@ -269,5 +263,153 @@ class Tour extends AppModel
 
     public function getImgAttribute() {
         return asset('storage/tours/' . $this->getRawOriginal('image'));
+    }
+
+    public function getDurationTourAttribute()
+    {
+        if ($this->duration == 1)
+        {
+            return 'A day';
+        }
+        else if($this->duration == 2)
+        {
+            return $this->duration . ' days ' . $this->duration - 1 . ' night';
+        } else
+        {
+            return $this->duration . ' days ' . $this->duration - 1 . ' nights';
+        }
+    }
+
+    // client
+    public function getAttrTourHomepage()
+    {
+        return $this->whereStatus(self::ACTIVE)->whereIsInterested(self::ACTIVE)->latest()->take(8)
+        ->whereHas('destination', function(Builder $query) {
+            return $query->whereStatus(self::ACTIVE);
+        })
+        ->whereHas('type', function(Builder $query) {
+            return $query->whereStatus(self::ACTIVE);
+        })
+        ->get();
+    }
+
+    public function getCulTourHomepage()
+    {
+        return $this->whereStatus(self::ACTIVE)->whereIsCulture(self::ACTIVE)->latest()->take(8)
+        ->whereHas('destination', function(Builder $query) {
+            return $query->whereStatus(self::ACTIVE);
+        })
+        ->whereHas('type', function(Builder $query) {
+            return $query->whereStatus(self::ACTIVE);
+        })
+        ->get();
+    }
+
+    public function getBySlug($slug)
+    {
+        return $this->whereSlug($slug)->first();
+    }
+
+    public function getAllTour()
+    {
+        return $this->whereStatus(self::ACTIVE)
+        ->whereHas('destination', function(Builder $query) {
+            return $query->whereStatus(self::ACTIVE);
+        })
+        ->whereHas('type', function(Builder $query) {
+            return $query->whereStatus(self::ACTIVE);
+        })
+        ->paginate(3);
+    }
+
+    public function getRelatedTour($tour_id)
+    {
+        $tour = $this->findOrFail($tour_id);
+        $destination_id = null;
+        $type_id = null;
+
+        if($tour->destination) {
+            $destination_id = $tour->destination->id;
+        }
+
+        if($tour->type) {
+            $type_id = $tour->type->id;
+        }
+
+        return $this->whereStatus(self::ACTIVE)->where('id', '!=', $tour_id)   
+        ->where(function ($query) use ($destination_id, $type_id) {
+            $query->WhereHas('destination', function ($query) use ($destination_id) {
+                $query->whereStatus(self::ACTIVE)->where('id', $destination_id);
+            })
+            ->orWhereHas('type', function ($query) use ($type_id) {
+                $query->whereStatus(self::ACTIVE)->where('id', $type_id);
+            });
+        })
+        ->latest()->get();
+    }
+
+    public function getReview($tour_id)
+    {
+        return $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)->latest()->paginate(2);
+    }
+
+    public function countStar($tour_id)
+    {
+        // $tour = $this->findOrFail($tour_id)->withSum('reviews', 'star')->withAvg('reviews', 'star')->get();
+        // $review_id = $tour->review->id;
+        // dd($tour);
+        $five_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
+        ->whereStar(5)->count();
+        $four_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
+        ->whereStar(4)->count();
+        $three_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
+        ->whereStar(3)->count();
+        $two_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
+        ->whereStar(2)->count();
+        $one_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
+        ->whereStar(1)->count();
+        $total = $five_star + $four_star + $three_star + $two_star + $one_star;
+        
+        if($total != 0) {
+            $average_one = ($one_star / $total)*100;
+            $average_two = ($two_star / $total)*100;
+            $average_three = ($three_star / $total)*100;
+            $average_four = ($four_star / $total)*100;
+            $average_five = ($five_star / $total)*100;
+            $average = ($five_star*5 + $four_star*4 + $three_star*3 + $two_star*2 + $one_star*1) / $total;
+        }
+
+        if(($this->find($tour_id)->reviews()->count()) > 0) {
+            $average = round($average, 1);
+            $average_one = round($average_one, 3);
+            $average_two = round($average_two, 3);
+            $average_three = round($average_three, 3);
+            $average_four = round($average_four, 3);
+            $average_five = round($average_five, 3);
+        } else {
+            $average = '0';
+            $average_one = 0;
+            $average_two = 0;
+            $average_three = 0;
+            $average_four = 0;
+            $average_five = 0;
+        }
+
+        return [
+            'five_star' => $five_star ,
+            'four_star' => $four_star,
+            'three_star' => $three_star,
+            'two_star' => $two_star,
+            'one_star' => $one_star,
+            'average' => $average,
+            'average_one' => $average_one,
+            'average_two' => $average_two,
+            'average_three' => $average_three,
+            'average_four' => $average_four,
+            'average_five' => $average_five,
+            'total' => $total
+        ];
+
+        // return $tour;
     }
 }

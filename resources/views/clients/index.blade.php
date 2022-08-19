@@ -44,50 +44,19 @@
                 <a href="">View all</a>
             </div>
             <div class="oustanding-location-detail">
-                <div id="oustanding-location-detail-carousel" class="owl-carousel owl-theme">
-                    <div class="item">
-                        <a href="">
-                            <img src="{{ asset('image/home/img1.png') }}" alt="image">
-                        <h5>Sapa, Laocai</h5>
-                        <span>24 experiences</span>
-                        </a>
+                @if (!empty($destinations) && count($destinations) > 0)
+                    <div id="oustanding-location-detail-carousel" class="owl-carousel owl-theme">
+                        @foreach ($destinations as $item)
+                            <div class="item">
+                                <a href="">
+                                    <img src="{{ $item->img }}" alt="image">
+                                    <h5>{{ $item->title }}</h5>
+                                    <span>{{ $item->tours_count }} experiences</span>
+                                </a>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="item">
-                        <a href="">
-                            <img src="{{ asset('image/home/img2.png') }}" alt="image">
-                        <h5>Hoian, Quangnam</h5>
-                        <span>12 experiences</span>
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                            <img src="{{ asset('image/home/img3.png') }}" alt="image">
-                        <h5>Ba Na Hill, Danang</h5>
-                        <span>28 experiences</span>
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                            <img src="{{ asset('image/home/img4.png') }}" alt="image">
-                        <h5>Muine, Binhthuan</h5>
-                        <span>11 experiences</span>
-                        </a>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                            <img src="{{ asset('image/home/img1.png') }}" alt="image">
-                        <h5>Sapa, Laocai</h5>
-                        <span>24 experiences</span>
-                        </a>
-                    </div>
-                    <div  class="item">
-                        <a href="">
-                            <img src="{{ asset('image/home/img2.png') }}" alt="image">
-                        <h5>Hoian, Quangnam</h5>
-                        <span>12 experiences</span>
-                        </a>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>  
     </div>
@@ -99,98 +68,27 @@
                 <a href="">View all</a>
             </div>
             <div class="attractive-tour-detail">
-                <div id="attractive-tour-detail-carousel" class="owl-carousel owl-theme">
-                    <div class="item">
-                        <a href="">
-                            <div class="attractive-tour-box-image">
-                                <img src="{{ asset('image/home/img5.png') }}" alt="image">
-                                <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                                <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
+                @if (!empty($tours_attr) && count($tours_attr) > 0)
+                    <div id="attractive-tour-detail-carousel" class="owl-carousel owl-theme">
+                        @foreach ($tours_attr as $item)
+                            <div class="item">
+                                <a href="{{ route('detailTour', $item->slug) }}">
+                                    <div class="attractive-tour-box-image">
+                                        <img src="{{ $item->img }}" alt="image">
+                                        <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
+                                        <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt="">{{ $item->countStar($item->id)['average'] }}</span>
+                                    </div>
+                                </a>
+                                <p><img src="./icon/location-orange.svg" alt="">{{ $item->destination->title }}</p>
+                                <a href="{{ route('detailTour', $item->slug) }}">{{ $item->title }}</a>
+                                <div class="attractive-tour-detail-bottom">
+                                    <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt="">{{ $item->duration_tour }}</p>
+                                    <p>from <span>${{ $item->price }}</span></p>
+                                </div>
                             </div>
-                        </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Sapa, Laocai</p>
-                        <a href="">Discover interesting things in the romantic coastal city of Vungtau</a>
-                        <div class="attractive-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 3 days - 2 night</p>
-                            <p>from <span>$146.00</span></p>
-                        </div>
+                        @endforeach
                     </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="attractive-tour-box-image">
-                            <img src="{{ asset('image/home/img6.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Sapa, Laocai</p>
-                        <a href="">Discover the most majestic Fansipan peak in Vietnam - the roof of Indochina                            </a>
-                        <div class="attractive-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 3 days - 2 night</p>
-                            <p>from <span>$234.00</span></p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="attractive-tour-box-image">
-                            <img src="{{ asset('image/home/img7.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="{{ asset('icon/location-orange.svg') }}" alt=""> Sapa, Laocai</p>
-                        <a href="">Experience sea tourism on Phuquoc golden pearl                            </a>
-                        <div class="attractive-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 3 days - 2 night</p>
-                            <p>from <span>$334.00</span></p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="attractive-tour-box-image">
-                            <img src="{{ asset('image/home/img5.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Sapa, Laocai</p>
-                        <a href="">Discover interesting things in the romantic coastal city of Vungtau</a>
-                        <div class="attractive-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 3 days - 2 night</p>
-                            <p>from <span>$146.00</span></p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="attractive-tour-box-image">
-                            <img src="{{ asset('image/home/img6.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Sapa, Laocai</p>
-                        <a href="">Discover the most majestic Fansipan peak in Vietnam - the roof of Indochina                            </a>
-                        <div class="attractive-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 3 days - 2 night</p>
-                            <p>from <span>$234.00</span></p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="attractive-tour-box-image">
-                            <img src="{{ asset('image/home/img7.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Sapa, Laocai</p>
-                        <a href="">Experience sea tourism on Phuquoc golden pearl                            </a>
-                        <div class="attractive-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 3 days - 2 night</p>
-                            <p>from <span>$334.00</span></p>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>  
     </div>
@@ -202,98 +100,27 @@
                 <a href="">View all</a>
             </div>
             <div class="traditional-tour-detail">
-                <div id="traditional-tour-detail-carousel" class="owl-carousel owl-theme">
-                    <div class="item">
-                        <a href="">
-                        <div class="traditional-tour-box-image">
-                             <img src="{{ asset('image/home/img8.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Lang Vong, Hanoi</p>
-                        <a href="">“ Com lang Vong “ - Traditional culinary features of the old Hanoi people</a>
-                        <div class="traditional-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 6 hours</p>
-                            <p>from <span>$234.00</span></p>
-                        </div>
+                @if (!empty($tours_cul) && count($tours_cul) > 0)
+                    <div id="traditional-tour-detail-carousel" class="owl-carousel owl-theme">
+                        @foreach ($tours_cul as $item)
+                            <div class="item">
+                                <a href="{{ route('detailTour', $item->slug) }}">
+                                <div class="traditional-tour-box-image">
+                                    <img src="{{ $item->img }}" alt="image">
+                                    <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
+                                    <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt="">{{ $item->countStar($item->id)['average'] }}</span>
+                                </div>
+                                </a>
+                                <p><img src="./icon/location-orange.svg" alt="">{{ $item->destination->title }}</p>
+                                <a href="{{ route('detailTour', $item->slug) }}">{{ $item->title }}</a>
+                                <div class="traditional-tour-detail-bottom">
+                                    <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt="">{{ $item->duration_tour }}</p>
+                                    <p>from <span>${{ $item->price }}</span></p>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="traditional-tour-box-image">
-                             <img src="{{ asset('image/home/img9.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Hue City, Thuathienhue</p>
-                        <a href="">“ Bun bo Hue “ - culinary specialties in the ancient capital of Hue</a>
-                        <div class="traditional-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 3 days - 2 night</p>
-                            <p>from <span>$234.00</span></p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="traditional-tour-box-image">
-                            <img src="{{ asset('image/home/img10.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Tiendu, Bacninh</p>
-                        <a href="">Heritage of Quan Ho Bac Ninh - Singing passionate hearts</a>
-                        <div class="traditional-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 2 hours</p>
-                            <p>from <span>$234.00</span></p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="traditional-tour-box-image">
-                             <img src="{{ asset('image/home/img8.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Lang Vong, Hanoi</p>
-                        <a href="">“ Com lang Vong “ - Traditional culinary features of the old Hanoi people</a>
-                        <div class="traditional-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 6 hours</p>
-                            <p>from <span>$234.00</span></p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="traditional-tour-box-image">
-                             <img src="{{ asset('image/home/img9.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Hue City, Thuathienhue</p>
-                        <a href="">“ Bun bo Hue “ - culinary specialties in the ancient capital of Hue</a>
-                        <div class="traditional-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 6 hours</p>
-                            <p>from <span>$234.00</span></p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <a href="">
-                        <div class="traditional-tour-box-image">
-                            <img src="{{ asset('image/home/img10.png') }}" alt="image">
-                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
-                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt=""> 4.5</span>
-                        </div>
-                    </a>
-                        <p><img src="./icon/location-orange.svg" alt=""> Tiendu, Bacninh</p>
-                        <a href="">Heritage of Quan Ho Bac Ninh - Singing passionate hearts</a>
-                        <div class="traditional-tour-detail-bottom">
-                            <p><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""> 2 hours</p>
-                            <p>from <span>$234.00</span></p>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>  
     </div>
