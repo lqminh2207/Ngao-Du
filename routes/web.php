@@ -4,15 +4,18 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\DashController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BookingController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\DestinationController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\ItineraryController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\PlaceController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\TypeController;
+use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\LogoutController;
 
 Auth::routes();
@@ -91,11 +94,11 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::delete('{id}/destroy', [GalleryController::class, 'destroy'])->name('destroy');
     });
 
+    // Route::resource('reviews', ReviewController::class)->except('show');
     Route::group(['prefix' => 'tours/{tour_id}/reviews', 'as' => 'reviews.'], function () {
         Route::post('/getData', [ReviewController::class, 'getData'])->name('getData');
         Route::get('', [ReviewController::class, 'show'])->name('show');
-        Route::post('/store', [ReviewController::class, 'store'])->name('store');
-        Route::delete('{id}/destroy', [ReviewController::class, 'destroy'])->name('destroy');
+        Route::delete('destroy', [ReviewController::class, 'destroy'])->name('destroy');
         Route::post('/changeStatus', [ReviewController::class, 'changeStatus'])->name('changeStatus');
     });
 
@@ -104,20 +107,26 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::post('/getData', [ContactController::class, 'getData'])->name('getData');
         Route::post('/changeStatus', [ContactController::class, 'changeStatus'])->name('changeStatus');
     });
+
+    Route::group(['prefix' => 'bookings', 'as' => 'bookings.'], function () {
+        Route::get('', [BookingController::class, 'index'])->name('index');
+        Route::post('/getData', [BookingController::class, 'getData'])->name('getData');
+        Route::post('/changeStatus', [BookingController::class, 'changeStatus'])->name('changeStatus');
+        Route::post('/paymentStatus', [BookingController::class, 'paymentStatus'])->name('paymentStatus');
+    });
 });
 
-Route::get('/', function() {
-    return view('clients.index');
-})->name('index');
-Route::get('/tours', function() {
-    return view('clients.tours');
-})->name('tours');
+Route::post('{tour_id}/store', [ReviewController::class, 'store'])->name('reviews.store');
+
+// client
+Route::get('/', [ClientController::class, 'index'])->name('index');
+Route::get('/tours', [ClientController::class, 'tours'])->name('tours');
+Route::get('/{slug}/detail', [ClientController::class, 'detailTour'])->name('detailTour');
+Route::get('/{slug}/checkout', [PaymentController::class, 'checkout'])->name('checkout');
+
 Route::get('/contact', function() {
     return view('clients.contact');
 })->name('contact');
-Route::get('/checkout', function() {
-    return view('clients.checkout');
-})->name('checkout');
 Route::get('/thanks', function() {
     return view('clients.thanks');
 })->name('thanks');

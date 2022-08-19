@@ -183,7 +183,7 @@
         function resetForm() {
             $('#btn-create').prop('disabled', false)
             $('#question').val('')
-            $('.answer').val('')
+            CKEDITOR.instances.editor1.setData('')
             $('#errorQues').text('')
             $('#errorAns').text('')
         }

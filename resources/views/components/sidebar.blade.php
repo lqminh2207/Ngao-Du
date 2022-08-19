@@ -41,7 +41,7 @@
                 <li class="sidebar-item"><a href="{{ route('types.index') }}" class="sidebar-link"><i class="mdi mdi-view-quilt"></i><span class="hide-menu"> Types </span></a></li>
                 <li class="sidebar-item"><a href="{{ route('destinations.index') }}" class="sidebar-link"><i class="mdi mdi-code-equal"></i><span class="hide-menu"> Destinations </span></a></li>
                 <li class="sidebar-item"><a href="{{ route('tours.index') }}" class="sidebar-link"><i class="mdi mdi-dns"></i><span class="hide-menu"> Tours </span></a></li>
-                {{-- <li class="sidebar-item"><a href="{{ route('bookings.index') }}" class="sidebar-link"><i class="mdi mdi-cube-send"></i><span class="hide-menu"> Booking </span></a></li> --}}
+                <li class="sidebar-item"><a href="{{ route('bookings.index') }}" class="sidebar-link"><i class="mdi mdi-cube-send"></i><span class="hide-menu"> Booking </span></a></li>
                 <li class="sidebar-item"><a href="{{ route('contacts.index') }}" class="sidebar-link"><i class="mdi mdi-creation"></i><span class="hide-menu"> Contact </span></a></li>
             </ul>
         </nav>

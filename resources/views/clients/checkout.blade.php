@@ -23,6 +23,11 @@
                                         <input type="text" class="form-control form-control-lg" id="firstname" placeholder="Your Name" name="fullname">
                                         <span class="form-message"></span>
                                     </div>
+                                    @if ($errors->has('firstname'))
+                                        <span class="text-danger">
+                                            <small>{{ $errors->first('firstname') }}</small>
+                                        </span>
+                                    @endif
                                 </div>
                                 <div class="col-12 col-md-6 booking-detail-form-right">
                                     <div class="form-group">
@@ -30,6 +35,11 @@
                                         <input type="text" class="form-control form-control-lg" id="lastname" placeholder="Last Name" name="fullname">
                                         <span class="form-message"></span>
                                     </div>
+                                    @if ($errors->has('lastname'))
+                                        <span class="text-danger">
+                                            <small>{{ $errors->first('lastname') }}</small>
+                                        </span>
+                                    @endif
                                 </div>
                                 <div class="col-12 col-md-6 booking-detail-form-left">
                                     <div class="form-group">
@@ -37,6 +47,11 @@
                                         <input type="text" class="form-control form-control-lg" id="email" placeholder="email@domain.com" name="fullname">
                                         <span class="form-message"></span>
                                     </div>
+                                    @if ($errors->has('email'))
+                                        <span class="text-danger">
+                                            <small>{{ $errors->first('email') }}</small>
+                                        </span>
+                                    @endif
                                 </div>
                                 <div class="col-12 col-md-6 booking-detail-form-right">
                                     <div class="form-group">
@@ -44,6 +59,11 @@
                                         <input type="text" class="form-control form-control-lg" id="phone" placeholder="Your Phone" name="fullname">
                                         <span class="form-message"></span>
                                     </div>
+                                    @if ($errors->has('phone'))
+                                        <span class="text-danger">
+                                            <small>{{ $errors->first('phone') }}</small>
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
                             <br>
@@ -116,57 +136,37 @@
                 </div>
                 <div id="first-position-type2" class="col-12 col-md-8 col-lg-5 col-xl-4 detail-price-box">
                     <div class="detail-price">
-                        <p class="title-detail-price">Discover interesting things in the romantic coastal city of Vungtau</p>
+                        <p class="title-detail-price">{{ $data->title }}</p>
                         <div class="detail-destination">
-                            <img src="./icon/location-orange.svg" alt="">
-                            <span>Vungtau City, Baria-Vungtau</span>
+                            <img src="{{ asset('icon/location-orange.svg') }}" alt="">
+                            <span>{{ $data->destination->title }}</span>
                         </div>
                         <div class="detail-price-content">
                             <div class="detail-duration">
                                 <span>Duration:</span>
-                                <p>3 days - 2 nights</p>
+                                <p>{{ $data->duration_tour }}</p>
                             </div>
                             <div class="detail-tour-type">
                                 <span>Tour type:</span>
-                                <p>Sun - Beach</p>
+                                <p>{{ $data->type->title }}</p>
                             </div>
                         </div>
                         <div class="tour-form-book">
-                            <form action="/action_page.php">
+                            <form action="">
                                 <div class="input-group mb-4 mr-sm-2">
                                     <div class="input-group-prepend">
-                                    <div class="input-group-text"><img src="./icon/calendar-clock-oragne.svg" alt=""></div>
+                                    <div class="input-group-text"><img src="{{ asset('icon/calendar-clock-oragne.svg') }}" alt=""></div>
                                     </div>
-                                    <input type="date" name="date" value="2021/07/22 - 2021/01/01" min="2021/01/01" max="2099/01/01" class="date-form">
+                                    <input type="date" name="date" value="{{ $date }}" min="{{ date('Y-m-d') }}" max="2099/01/01" class="date-form">
                                 </div>
                                 <div class="input-group mb-3 mr-sm-2">
                                     <div class="input-group-prepend">
-                                    <div class="input-group-text"><img src="./icon/people.svg" alt=""></div>
+                                    <div class="input-group-text"><img src="{{ asset('icon/people.svg') }}" alt=""></div>
                                     </div>
                                     <select class="js-example-basic-single form-control" id="tour-types" name="state">
-                                        <option>Number of people</option>
-                                        <option>1 Adult</option>
-                                        <option>2 Adults</option>
-                                        <option>3 Adults</option>
-                                        <option>4 Adults</option>
-                                        <option>5 Adult</option>
-                                        <option>6 Adults</option>
-                                        <option>7 Adults</option>
-                                        <option>8 Adults</option>
-                                        <option>9 Adult</option>
-                                        <option>10 Adults</option>
-                                        <option>11 Adults</option>
-                                        <option>12 Adults</option>
-                                        <option>13 Adults</option>
-                                        <option>14 Adults</option>
-                                        <option>15 Adult</option>
-                                        <option>16 Adults</option>
-                                        <option>17 Adults</option>
-                                        <option>18 Adults</option>
-                                        <option>19 Adult</option>
-                                        <option>20 Adults</option>
+                                        <option value="{{ $people }}" disabled selected>{{ $people }} people</option>
                                     </select>
-                                </div>
+                                </div>  
                                 <div class="promo-code">
                                     <input type="text" class="form-control" id="country" placeholder="Promo Code" name="Promo Code">
                                     <button type="submit">Apply</button>
@@ -175,7 +175,7 @@
                         </div>
                         <div class="total-price">
                             <h5>Total</h5>
-                            <span>$450.00</span>
+                            <span id="total-price">$0</span>
                         </div>
                     </div>
                 </div>
@@ -183,4 +183,14 @@
         </div>
     </div>  
 @endsection
+
+@push('js')
+    <script>
+        let tour_price = $('.tour-price').text();
+        $('#form-payment').on('change', function(e) {
+            let price = $('select[name=people]').val() * tour_price;
+            $('#total-price').text('$' + price)
+        })  
+    </script>
+@endpush
 

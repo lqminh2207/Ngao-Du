@@ -4,23 +4,6 @@
 @if ($paginator->hasPages())
     <nav aria-label="..." class=" Page navigation example">
         <ul class="pagination" style="align-items: center;">
-            @foreach ($elements as $element)
-                @if (is_array($element))
-                    @foreach ($element as $page => $url)
-                        @if ($page == $paginator->currentPage())
-                            <li class="page-item active" style="color: #8E8E93;" aria-current="page">
-                                <span style="margin-right: 20px;">Showing</span>
-                                <span>{{ $page }} /</span>
-                            </li>
-                        @endif
-                        @if ($page == $paginator->lastPage())
-                            <li class="page-item" style="margin: 0 0 0 2px; color: #8E8E93;" aria-current="page">
-                                <span>{{ $page }}</span>
-                            </li>
-                        @endif
-                    @endforeach
-                @endif
-            @endforeach
             {{-- Previous Page Link --}}
             @if ($paginator->onFirstPage())
                 <li class="page-item disabled" aria-disabled="true">

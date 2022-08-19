@@ -125,7 +125,7 @@
                             <div class="col-6 form-group">
                                 <label for="exampleInputMap">Embed link map</label>
                                 <input type="text" class="form-control" onkeyup="ChangeToMap()" id="map"
-                                    value="{{ old('map') }}" name="map"
+                                    value="{{ $tour->map }}" name="map"
                                     placeholder="map">
                             </div>
 
@@ -256,3 +256,13 @@
         </div>
     </div>
 @endsection
+
+@push('js')
+    <script>
+        CKEDITOR.replace('editor1');
+        CKEDITOR.replace('editor2'); 
+        CKEDITOR.replace('editor3'); 
+        CKEDITOR.replace('editor4'); 
+        CKEDITOR.replace('editor5'); 
+    </script>
+@endpush
