@@ -39,8 +39,8 @@ class Tour extends AppModel
     ];
 
     public function getByIdTour($id) 
-    {
-        return $this->find($id);
+    { 
+        return $this->find($id); 
     }
 
     public function destination()
@@ -267,7 +267,7 @@ class Tour extends AppModel
 
     public function getDurationTourAttribute()
     {
-        if ($this->duration == 1)
+        if ($this->duration == DURATION_A_DAY)
         {
             return 'A day';
         }
@@ -280,29 +280,38 @@ class Tour extends AppModel
         }
     }
 
+    public function scopeActive($query)
+    {
+        return $this->whereStatus(self::ACTIVE);
+    }
+
     // client
     public function getAttrTourHomepage()
     {
-        return $this->whereStatus(self::ACTIVE)->whereIsInterested(self::ACTIVE)->latest()->take(8)
-        ->whereHas('destination', function(Builder $query) {
-            return $query->whereStatus(self::ACTIVE);
-        })
-        ->whereHas('type', function(Builder $query) {
-            return $query->whereStatus(self::ACTIVE);
-        })
-        ->get();
+        $query = $this->whereIsInterested(self::ACTIVE);
+        $tuor = $this->getData($query);
+        return $tuor;
     }
 
     public function getCulTourHomepage()
     {
-        return $this->whereStatus(self::ACTIVE)->whereIsCulture(self::ACTIVE)->latest()->take(8)
+        $query = $this->whereIsCulture(self::ACTIVE);
+        $tuor = $this->getData($query);
+        return $tuor;
+        
+    }
+
+    public function getData ($query) 
+    {
+        return $query->active()
         ->whereHas('destination', function(Builder $query) {
             return $query->whereStatus(self::ACTIVE);
         })
         ->whereHas('type', function(Builder $query) {
             return $query->whereStatus(self::ACTIVE);
         })
-        ->get();
+        ->latest()->take(8)->get();
+    
     }
 
     public function getBySlug($slug)
@@ -376,7 +385,7 @@ class Tour extends AppModel
             $average_three = ($three_star / $total)*100;
             $average_four = ($four_star / $total)*100;
             $average_five = ($five_star / $total)*100;
-            $average = ($five_star*5 + $four_star*4 + $three_star*3 + $two_star*2 + $one_star*1) / $total;
+            $average = ($five_star * 5 + $four_star * 4 + $three_star*3 + $two_star*2 + $one_star*1) / $total;
         }
 
         if(($this->find($tour_id)->reviews()->count()) > 0) {

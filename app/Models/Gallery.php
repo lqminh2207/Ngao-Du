@@ -33,7 +33,7 @@ class Gallery extends Model
         $data = [];
 
         $request->validate([
-            'image' => 'required',
+            'image' => 'required|array',
             'image.*' => 'mimes:jpg,jpeg,png,gif,svg|max:10240'
         ]);
 

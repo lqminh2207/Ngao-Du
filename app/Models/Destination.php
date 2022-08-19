@@ -92,7 +92,7 @@ class Destination extends AppModel
         return $data;
     }
 
-    public function getImgAttribute() 
+    public function getImgUrlAttribute() 
     {
         return asset('storage/destinations/' . $this->getRawOriginal('image'));
     }

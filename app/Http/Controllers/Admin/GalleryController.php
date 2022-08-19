@@ -29,7 +29,6 @@ class GalleryController extends Controller
     public function store(Request $request, $tour_id)
     {
         try {
-            return $this->gallery->saveData($request, $tour_id);
         } catch (Exception $e) {
             // dd($e);
         }
