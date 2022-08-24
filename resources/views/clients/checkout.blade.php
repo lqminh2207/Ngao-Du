@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12 col-md-7"><hr></div>
             </div>
-            <form action="{{ route('stripe') }}" method="POST" class="form" id="form-1">
+            <form action="{{ route('storeStripe') }}" method="POST" class="form" id="form-1">
                 <div class="row">
                     <div id="second-position-type2" class="col-12 col-md-12 col-lg-7 col-xl-7 booking-detail">
                         <h4>Traveler Details</h4>
@@ -74,6 +74,11 @@
                                         <div class="form-group">
                                             <label for="address">Your Address</label>
                                             <input type="text" class="form-control form-control-lg" id="address" placeholder="Your Address" name="address">
+                                            @if ($errors->has('address'))
+                                                <span class="text-danger">
+                                                    <small>{{ $errors->first('address') }}</small>
+                                                </span>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="col-12 col-md-6 booking-detail-form-left">

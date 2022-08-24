@@ -87,4 +87,40 @@
             });
         });
     </script>
+
+    <script>
+        $(document).on('click', '.btn-refund', function(e) {
+            e.preventDefault();
+            let url = $(this).attr('href')  
+            swal({
+                title: '',
+                text: 'Do you want to refund?',
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#f15e5d',
+                cancelButtonColor: '#c1c1c1',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: url,
+                        type: 'POST',
+
+                        success: function (response) {
+                            $('#myTable').DataTable().ajax.reload();
+                            toastr.success("Successfully refunded")
+                        },
+                        error: function (xhr) {
+                            // console.log(xhr);
+                            // toastr.error(xhr.responseJSON.message);
+                            toastr.error("Failed to refund")
+                        },
+                    })
+                }
+            })
+        });
+
+    </script>
 @endpush
