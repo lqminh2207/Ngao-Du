@@ -43,6 +43,7 @@
                                 <th>Departure date</th>
                                 <th>Price</th>
                                 <th>Payment status</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                     </table>
@@ -77,6 +78,7 @@
                     {data:'start_at', name:'start_at', width:'15%', orderable: false, searchable:false, class:'text-center align-middle'},
                     {data:'price', name:'price', width:'10%', orderable: false, searchable:false, class:'text-center align-middle'},
                     {data:'payment_status', name:'payment_status', width:'10%', orderable: false, searchable:false, class:'text-center align-middle'},
+                    {data:'action', name:'action', width:'5%', orderable: false, searchable:false, class:'text-center align-middle'},
                 ],
             });
     

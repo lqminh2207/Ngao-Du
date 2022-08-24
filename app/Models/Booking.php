@@ -93,6 +93,11 @@ class Booking extends Model
             ->addColumn('payment_status', function ($data) {
                 return view('action.payment_status', ['checked' => $data->payment_status, 'id' => $data->id]);
             })
+            ->addColumn('action', function ($data) {
+                return view('action.refund', [
+                    'url_refund' => 1
+                ]);
+            })
 
             ->rawColumns(['status', 'payment_status'])
             ->make(true);
