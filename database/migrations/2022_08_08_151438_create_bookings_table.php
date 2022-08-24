@@ -27,12 +27,15 @@ class CreateBookingsTable extends Migration
             $table->string('country', 50)->nullable();
             $table->text('requirement')->nullable();
             $table->tinyInteger('payment_method')->nullable()->default(3)->comment('1-stripe, 2-paypal, 3-cash');
-            $table->tinyInteger('payment_status')->nullable()->comment('1-paid, 2-unpaid');
+            $table->tinyInteger('payment_status')->nullable()->default(2)->comment('1-paid, 2-unpaid');
             $table->tinyInteger('status')->nullable()->default(1)->comment('1-show, 2-hide');
             $table->double('price')->nullable()->default(0);
             $table->integer('people');
+            $table->text('payment_detail')->nullable();
             $table->date('start_at');
             $table->timestamps();
+
+            $table->foreign('tour_id')->references('id')->on('tours');
         });
     }
 

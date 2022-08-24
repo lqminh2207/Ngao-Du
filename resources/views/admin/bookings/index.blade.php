@@ -37,12 +37,12 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
                                 <th>Numbers of people</th>
                                 <th>Departure date</th>
                                 <th>Price</th>
                                 <th>Payment status</th>
-                                <th>Status</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                     </table>
@@ -65,57 +65,24 @@
                     type:"POST",
                     url:"{{route('bookings.getData')}}",
                     data: function (d) {
-                        d.search = $('#filter_search').val(),
-                        d.status = $('#status').val()
+                        d.search = $('#filter_search').val()
                     }
                 },
                 columns:[
                     {data: 'DT_RowIndex', name: 'DT_RowIndex', width:'5%', orderable: false, searchable:false, class: 'align-middle'},
-                    {data:'fullname', name:'firstname' . ' ' . 'lastname', width:'20%', orderable: false, searchable:false, class:'text-center align-middle'},
-                    {data:'people', name:'people', width:'15%', orderable: false, searchable:false, class:'text-center align-middle'},
+                    {data:'lastname', name:'lastname', width:'20%', orderable: false, searchable:false, class:'text-center align-middle'},
+                    {data:'email', name:'email', width:'10%', orderable: false, searchable:false, class:'text-center align-middle'},
+                    {data:'phone', name:'phone', width:'10%', orderable: false, searchable:false, class:'text-center align-middle'},
+                    {data:'people', name:'people', width:'10%', orderable: false, searchable:false, class:'text-center align-middle'},
                     {data:'start_at', name:'start_at', width:'15%', orderable: false, searchable:false, class:'text-center align-middle'},
                     {data:'price', name:'price', width:'10%', orderable: false, searchable:false, class:'text-center align-middle'},
-                    {data:'payment_status', name:'payment_status', width:'15%', orderable: false, searchable:false, class:'text-center align-middle'},
-                    {data:'status', name:'status', width:'10%', orderable: false, searchable:false, class:'text-center align-middle'},
-                    {data:'action', name:'action', width:'5%', orderable: false, searchable:false, class:'text-center align-middle'},
+                    {data:'payment_status', name:'payment_status', width:'10%', orderable: false, searchable:false, class:'text-center align-middle'},
                 ],
             });
     
             $('#filter_search').on('keyup',function(){
                 datatable.draw();
             });
-    
-            $('#status').on('change', function(){
-                datatable.draw();
-            });
         });
     </script>
-
-
-    {{-- changeStatus --}}
-    <script>
-        $(document).on('click', '.toggle-class', function(e) {
-            var status = $(this).prop('checked') == true ? 1 : 2;
-            var id = $(this).data('id');
-            $.ajax({
-                type: 'GET',
-                dataType: 'JSON',
-                url: '{{ route('bookings.changeStatus') }}',
-                data: {
-                    'status': status,
-                    'id': id
-                },
-                success: function(data) {
-                    toastr.success(data.message);
-                }
-            });
-        });
-    </script>
-    {{-- End ChangeStatus --}}
-
-    {{-- Destroy Data --}}
-    <script>
-        removeData('.btn-delete', '#myTable', '', true, "")
-    </script>
-    {{-- End Destroy Data --}}
 @endpush

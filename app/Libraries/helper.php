@@ -23,52 +23,52 @@ if (!function_exists('uploadLibrary')) {
 }
 
 if (!function_exists('getFileFromPath')) {
-    function getFileFromPath($images, $path = '')
-    {
-        $file_list = array();
-        foreach ($images as $image) {
-            $image->path = $path;
-            $file_path = $image->image_path;
-            $info = pathinfo($file_path);
+    // function getFileFromPath($images, $path = '')
+    // {
+    //     $file_list = array();
+    //     foreach ($images as $image) {
+    //         $image->path = $path;
+    //         $file_path = $image->image_path;
+    //         $info = pathinfo($file_path);
 
-            if (file_exists(public_path($path . $image->image))) {
-                $size = File::size(public_path($path . $image->image));
-                $mimeType = File::mimeType(public_path($path . $image->image));
-                $file_list[] = array(
-                    'name' => $info['basename'],
-                    'size' => $size,
-                    'path' => $file_path,
-                    'url' => $image->path,
-                    'type' => $mimeType
-                );
-            }
-        }
-        return json_encode($file_list);
-    }
+    //         if (file_exists(public_path($path . $image->image))) {
+    //             $size = File::size(public_path($path . $image->image));
+    //             $mimeType = File::mimeType(public_path($path . $image->image));
+    //             $file_list[] = array(
+    //                 'name' => $info['basename'],
+    //                 'size' => $size,
+    //                 'path' => $file_path,
+    //                 'url' => $image->path,
+    //                 'type' => $mimeType
+    //             );
+    //         }
+    //     }
+    //     return json_encode($file_list);
+    // }
 }
 
 function convertFormat($images)
 {
-    $file_list = array();
-    foreach ($images as $image) {
-        $path = 'uploads/' . $image->id . '/';
-        $path = 'uploads/' . $image->id . '/';
-        $image->path = $path;
-        $file_path = $image->getFullUrl();
-        $info = pathinfo($file_path);
-        if (file_exists(public_path($path . $image->file_name))) {
-            $size = File::size(public_path($path . $image->file_name));
-            $mimeType = File::mimeType(public_path($path . $image->file_name));
-            $file_list[] = array(
-                'name' => $info['basename'],
-                'size' => $size,
-                'path' => $file_path,
-                'url' => $image->path,
-                'type' => $mimeType
-            );
-        }
-    }
-    return json_encode($file_list);
+    // $file_list = array();
+    // foreach ($images as $image) {
+    //     $path = 'uploads/' . $image->id . '/';
+    //     $path = 'uploads/' . $image->id . '/';
+    //     $image->path = $path;
+    //     $file_path = $image->getFullUrl();
+    //     $info = pathinfo($file_path);
+    //     if (file_exists(public_path($path . $image->file_name))) {
+    //         $size = File::size(public_path($path . $image->file_name));
+    //         $mimeType = File::mimeType(public_path($path . $image->file_name));
+    //         $file_list[] = array(
+    //             'name' => $info['basename'],
+    //             'size' => $size,
+    //             'path' => $file_path,
+    //             'url' => $image->path,
+    //             'type' => $mimeType
+    //         );
+    //     }
+    // }
+    // return json_encode($file_list);
 }
 
 function thumbnail($url = '', $with = 300, $height = 300, $t = 1)
@@ -120,19 +120,19 @@ function validateDate($date, $format = 'Y-m-d')
 }
 
 if (!function_exists('checkExitsReferralCode')) {
-    function checkExitsReferralCode($code)
-    {
-        $code = Common::clearXSS($code);
-        $user = User::where('my_referral_code', $code)->first();
-        if ($user) {
-            return true;
-        }
-        $tutor = Tutor::where('my_referral_code', $code)->first();
-        if ($tutor) {
-            return true;
-        }
-        return false;
-    }
+    // function checkExitsReferralCode($code)
+    // {
+    //     $code = Common::clearXSS($code);
+    //     $user = User::where('my_referral_code', $code)->first();
+    //     if ($user) {
+    //         return true;
+    //     }
+    //     $tutor = Tutor::where('my_referral_code', $code)->first();
+    //     if ($tutor) {
+    //         return true;
+    //     }
+    //     return false;
+    // }
 }
 
 if (!function_exists('converHoureToAddZero')) {

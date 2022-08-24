@@ -80,7 +80,7 @@ class Tour extends AppModel
 
     public function getDataAjax($request) 
     {
-        $data = $this->latest();
+        $data = $this->query();
 
         if(!empty($request->status)) {
             $data = $data->whereStatus($request->status);
@@ -109,8 +109,8 @@ class Tour extends AppModel
 
         return DataTables::of($data)   
             ->addIndexColumn()
-            ->addColumn('image', function ($data){
-                return '<img src="'.$data->img.'" alt="" width="120" height="120">';
+            ->editColumn('image', function ($data){
+                return '<img src="'.$data->img_url.'" alt="" width="120" height="120">';
             })
             ->editColumn('status', function ($data) {
                 return view('action.switch', ['checked' => $data->status, 'id' => $data->id]);
@@ -118,23 +118,11 @@ class Tour extends AppModel
             ->editColumn('trending', function ($data) {
                 return view('action.switch-trending', ['checked' => $data->trending, 'id' => $data->id]);
             })
-            ->addColumn('title', function ($data) {
+            ->editColumn('title', function ($data) {
                 return '<h6 class="m-0">'. $data->title .'</h6>
                 <p class="m-1">'. $data->destination->title .'</p>
                 <p class="m-0">'. '(' . $data->type->title . ')' .'</p>';
-            })
-            ->addColumn('overview', function ($data) {
-                return $data->overview;
-            })
-            ->addColumn('include', function ($data) {
-                return $data->include;
-            })
-            ->addColumn('departure', function ($data) {
-                return $data->departure;
-            })
-            ->addColumn('additional', function ($data) {
-                return $data->additional;
-            })
+            })  
             ->addColumn('action', function ($item) {
                 return view('action.action', [
                     'message' => null,
@@ -162,7 +150,7 @@ class Tour extends AppModel
                     'reviews' => route('reviews.show', $data->id)
                 ]);
             })
-            ->rawColumns(['action', 'title', 'image', 'overview', 'include', 'departure', 'additional', 'status', 'trending', 'duration'])
+            ->rawColumns(['action', 'title', 'image', 'status', 'trending', 'duration'])
             ->make(true);
     }
 
@@ -261,7 +249,7 @@ class Tour extends AppModel
         return $data;
     }
 
-    public function getImgAttribute() {
+    public function getImgUrlAttribute() {
         return asset('storage/tours/' . $this->getRawOriginal('image'));
     }
 
@@ -271,7 +259,7 @@ class Tour extends AppModel
         {
             return 'A day';
         }
-        else if($this->duration == 2)
+        else if($this->duration == DURATION_TWO_DAY)
         {
             return $this->duration . ' days ' . $this->duration - 1 . ' night';
         } else
@@ -279,26 +267,17 @@ class Tour extends AppModel
             return $this->duration . ' days ' . $this->duration - 1 . ' nights';
         }
     }
+    
+    // client
+
+    public function getBySlug($slug)
+    {
+        return $this->whereSlug($slug)->first();
+    }
 
     public function scopeActive($query)
     {
-        return $this->whereStatus(self::ACTIVE);
-    }
-
-    // client
-    public function getAttrTourHomepage()
-    {
-        $query = $this->whereIsInterested(self::ACTIVE);
-        $tuor = $this->getData($query);
-        return $tuor;
-    }
-
-    public function getCulTourHomepage()
-    {
-        $query = $this->whereIsCulture(self::ACTIVE);
-        $tuor = $this->getData($query);
-        return $tuor;
-        
+        return $query->whereStatus(self::ACTIVE);
     }
 
     public function getData ($query) 
@@ -309,26 +288,28 @@ class Tour extends AppModel
         })
         ->whereHas('type', function(Builder $query) {
             return $query->whereStatus(self::ACTIVE);
-        })
-        ->latest()->take(8)->get();
-    
+        });
     }
 
-    public function getBySlug($slug)
+    public function getAttrTourHomepage()
     {
-        return $this->whereSlug($slug)->first();
+        $query = $this->whereIsInterested(self::ACTIVE);
+        $attr_tour = $this->getData($query)->latest()->take(8)->get();
+        return $attr_tour;
+    }
+
+    public function getCulTourHomepage()
+    {
+        $query = $this->whereIsCulture(self::ACTIVE);
+        $cul_tour = $this->getData($query)->latest()->take(8)->get();
+        return $cul_tour;
+        
     }
 
     public function getAllTour()
     {
-        return $this->whereStatus(self::ACTIVE)
-        ->whereHas('destination', function(Builder $query) {
-            return $query->whereStatus(self::ACTIVE);
-        })
-        ->whereHas('type', function(Builder $query) {
-            return $query->whereStatus(self::ACTIVE);
-        })
-        ->paginate(3);
+        $tour = $this->getData($this)->paginate(3);
+        return $tour;
     }
 
     public function getRelatedTour($tour_id)
@@ -362,39 +343,98 @@ class Tour extends AppModel
         return $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)->latest()->paginate(2);
     }
 
-    public function countStar($tour_id)
-    {
-        // $tour = $this->findOrFail($tour_id)->withSum('reviews', 'star')->withAvg('reviews', 'star')->get();
-        // $review_id = $tour->review->id;
-        // dd($tour);
-        $five_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
-        ->whereStar(5)->count();
-        $four_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
-        ->whereStar(4)->count();
-        $three_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
-        ->whereStar(3)->count();
-        $two_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
-        ->whereStar(2)->count();
-        $one_star = $this->find($tour_id)->reviews()->whereStatus(self::ACTIVE)
-        ->whereStar(1)->count();
-        $total = $five_star + $four_star + $three_star + $two_star + $one_star;
+    public function countStar()
+    {   
+        // $reviews = $this->reviews;
+
+        // $five_star = 0;
+        // $four_star = 0;
+        // $three_star = 0;
+        // $two_star = 0;
+        // $one_star = 0;
+        // $total = $reviews->count();
         
-        if($total != 0) {
-            $average_one = ($one_star / $total)*100;
-            $average_two = ($two_star / $total)*100;
-            $average_three = ($three_star / $total)*100;
-            $average_four = ($four_star / $total)*100;
-            $average_five = ($five_star / $total)*100;
-            $average = ($five_star * 5 + $four_star * 4 + $three_star*3 + $two_star*2 + $one_star*1) / $total;
+        // foreach ($reviews as $key => $value) {
+        //     if($value->star == 5) {
+        //         $five_star++;
+        //     }
+        //     if($value->star == 4) {
+        //         $four_star++;
+        //     }
+        //     if($value->star == 3) {
+        //         $three_star++;
+        //     }
+        //     if($value->star == 2) {
+        //         $two_star++;
+        //     }
+        //     if($value->star == 1) {
+        //         $one_star++;
+        //     }
+        // }
+
+        // if($total != 0) {
+        //     $average_one = ($one_star / $total)*100;
+        //     $average_two = ($two_star / $total)*100;
+        //     $average_three = ($three_star / $total)*100;
+        //     $average_four = ($four_star / $total)*100;
+        //     $average_five = ($five_star / $total)*100;
+        //     $average = ($five_star * 5 + $four_star * 4 + $three_star*3 + $two_star*2 + $one_star*1) / $total;
+        // }
+
+        // if($total > 0) {
+        //     $average = round($average, 1);
+        //     $average_one = round($average_one, 3);
+        //     $average_two = round($average_two, 3);
+        //     $average_three = round($average_three, 3);
+        //     $average_four = round($average_four, 3);
+        //     $average_five = round($average_five, 3);
+        // } else {
+        //     $average = '0';
+        //     $average_one = 0;
+        //     $average_two = 0;
+        //     $average_three = 0;
+        //     $average_four = 0;
+        //     $average_five = 0;
+        // }
+
+        // return [
+        //     'five_star' => $five_star ,
+        //     'four_star' => $four_star,
+        //     'three_star' => $three_star,
+        //     'two_star' => $two_star,
+        //     'one_star' => $one_star,
+        //     'average' => $average,
+        //     'average_one' => $average_one,
+        //     'average_two' => $average_two,
+        //     'average_three' => $average_three,
+        //     'average_four' => $average_four,
+        //     'average_five' => $average_five,
+        //     'total' => $total
+        // ];
+
+        $reviews = $this->reviews;
+        $total = $reviews->count();
+        $groupReviews = $reviews->groupBy('star');
+
+        $data = [
+            '1' => 0,
+            '2' => 0,
+            '3' => 0,
+            '4' => 0,
+            '5' => 0,
+        ];
+        
+        foreach ($groupReviews as $key => $value) {
+            $data[$key] = $value->count();
         }
 
-        if(($this->find($tour_id)->reviews()->count()) > 0) {
-            $average = round($average, 1);
-            $average_one = round($average_one, 3);
-            $average_two = round($average_two, 3);
-            $average_three = round($average_three, 3);
-            $average_four = round($average_four, 3);
-            $average_five = round($average_five, 3);
+          if($total > 0) {
+            $average =  round($reviews->avg('star'),1);
+            $average_one = round($data['1'] / $total * 100, 3);
+            $average_two = round($data['2'] / $total * 100, 3);
+            $average_three = round($data['3'] / $total * 100, 3);
+            $average_four = round($data['4'] / $total * 100, 3);
+            $average_five = round($data['5'] / $total * 100, 3);
         } else {
             $average = '0';
             $average_one = 0;
@@ -405,11 +445,11 @@ class Tour extends AppModel
         }
 
         return [
-            'five_star' => $five_star ,
-            'four_star' => $four_star,
-            'three_star' => $three_star,
-            'two_star' => $two_star,
-            'one_star' => $one_star,
+            'five_star' => $data['5'],
+            'four_star' => $data['4'],
+            'three_star' => $data['3'],
+            'two_star' => $data['2'],
+            'one_star' => $data['1'],
             'average' => $average,
             'average_one' => $average_one,
             'average_two' => $average_two,
@@ -418,7 +458,5 @@ class Tour extends AppModel
             'average_five' => $average_five,
             'total' => $total
         ];
-
-        // return $tour;
     }
 }

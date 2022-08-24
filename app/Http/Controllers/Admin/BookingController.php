@@ -23,33 +23,11 @@ class BookingController extends Controller
         return view('admin.bookings.index');
     }
 
-    public function store(Request $request)
-    {
-        $this->booking->saveData($request);
-
-        return redirect()->back()->with('message', 'Successfully');
-    }
-
     public function getData(Request $request)
     {
         if ($request->ajax())
         {
             return $this->booking->getDataAjax($request);
         }
-    }
-
-    public function destroy(Request $request, $id)
-    {
-        $booking = $this->booking->find($id);
-
-        if (empty($booking)) {
-            \abort(404);
-        }
-
-        $booking->delete();
-
-        return response()->json([
-            'message' => 'Itinerary successfuly deleted' 
-         ]);
     }
 }

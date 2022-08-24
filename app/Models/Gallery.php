@@ -51,7 +51,7 @@ class Gallery extends Model
         return $data;
     }
 
-    public function getImageAttribute()
+    public function getImgUrlAttribute()
     {
         return asset('storage/galleries/' . $this->getRawOriginal('image'));
     }

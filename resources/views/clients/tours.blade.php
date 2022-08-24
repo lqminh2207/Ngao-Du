@@ -111,7 +111,7 @@
                             <div class="col-12 col-md-6 col-lg-4 item list-item">
                                 <a href="{{ route('detailTour', $item->slug) }}">
                                     <div class="attractive-tour-box-image">
-                                        <img src="{{ $item->img }}" alt="image">
+                                        <img src="{{ $item->img_url }}" alt="image">
                                         <img class="marker" src="{{ asset("icon/marker.svg") }}" alt="">
                                         <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt="">{{ $item->countStar($item->id)['average'] }}</span>
                                     </div>

@@ -77,7 +77,7 @@ dd($errors->all());
                                         <div class="col-md-3 wrap-image" id="image{{ $tourImageItem->id }}"
                                             style="position: relative">
                                             <img class="image_item"
-                                                src="{{ $tourImageItem->image }}" alt=""
+                                                src="{{ $tourImageItem->img_url }}" alt=""
                                                 width="100%" height="auto" style="margin-top: 15px">
                                             <a  title="Delete" href="{{ route('galleries.destroy', [$tour->id, $tourImageItem->id]) }}"
                                                 id="delete-gallery"

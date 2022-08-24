@@ -5,13 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Tour;
+use Error;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Stripe;
 
 class PaymentController extends Controller
 {
-    public function checkout(Request $request, Booking $payment, Tour $tour, $slug)
+    protected $booking;
+    protected $tour;
+
+    public function __construct(Tour $tour, Booking $booking)
+    {
+        $this->tour = $tour;
+        $this->booking = $booking;
+    }
+
+    public function checkout(Request $request, Tour $tour, $slug)
     {
         // dd($request);
         $tour = $tour->getBySlug($slug);
@@ -23,23 +33,77 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function stripe() 
+    public function stripe(Request $request)
     {
-        return view('stripe');
+        $request->validate($this->booking->rules());
+        $booking = $this->booking->saveData($request);
+
+        $bookingID = $booking->id;
+        $routePayment = route('stripe.post', $bookingID);
+        $routeSuccess = route('paymentSuccess', $bookingID);
+
+        return view('clients.payment', compact('routePayment', 'routeSuccess'));
     }
 
-    public function stripePost(Request $request)
+    public function stripePost(Request $request, $id)
     {
+        $booking = $this->booking->find($id);
+        $price = $booking->price * $booking->people;
+
         Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        Stripe\Charge::create ([
-                "amount" => 100 * 100,
-                "currency" => "usd",
-                "source" => $request->stripeToken,
-                "description" => "Test payment from itsolutionstuff.com." 
-        ]);
-  
-        Session::flash('success', 'Payment successful!');
+        
+        $stripe = new \Stripe\StripeClient(
+            env('STRIPE_SECRET')
+        );
+
+        // $stripe->paymentIntents->retrieve(
+        //     'pi_3LZVr1DlyvxhygrP0oCqHmAy',
+        //     []
+        // );
+
+        // $bookingDetail = $request->id;
+        // dd($bookingDetail);
+
+        try {
+            // retrieve JSON from POST body
+            $jsonStr = file_get_contents('php://input');
+            $jsonObj = json_decode($jsonStr);
+        
+            // Create a PaymentIntent with amount and currency
+            $paymentIntent = \Stripe\PaymentIntent::create([
+                'amount' => 100 * $price,
+                'currency' => 'usd',
+                'automatic_payment_methods' => [
+                    'enabled' => true,
+                ],
+            ]);
+
+            $input['payment_detail'] = json_encode($paymentIntent);
+            $booking->update($input);
+            
+            $output = [
+                'clientSecret' => $paymentIntent->client_secret,
+            ];
+ 
+            return json_encode($output);
+        } catch (Error $e) {
+            http_response_code(500);
+            return json_encode(['error' => $e->getMessage()]);
+        }
           
         return back();
+    }
+
+    public function paymentSuccess(Request $request, $id)
+    {
+        $booking = $this->booking->find($id);
+
+        if($request->redirect_status === "succeeded") 
+        {
+            $input['payment_status'] = 1;
+            $booking->update($input);
+        }
+        
+        return view('clients.thanks');
     }
 }
