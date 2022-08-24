@@ -64,6 +64,13 @@ class PaymentController extends Controller
         // $bookingDetail = $request->id;
         // dd($bookingDetail);
 
+        // $stripe = new Stripe();
+        // $stripe = Stripe::make(env('STRIPE_SECRET'));
+
+        // $charge_id = Session::get('charge_id');
+        // $amount = Session::get('payment_amount');    
+        // $refund = $stripe->refunds->create($charge_id, 100 * $price, ['reason' => 'refund']);
+
         try {
             // retrieve JSON from POST body
             $jsonStr = file_get_contents('php://input');
@@ -105,5 +112,10 @@ class PaymentController extends Controller
         }
         
         return view('clients.thanks');
+    }
+
+    public function stripeRefund()
+    {
+        
     }
 }
