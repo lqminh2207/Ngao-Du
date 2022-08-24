@@ -30,6 +30,7 @@ class Booking extends Model
         'status',
         'price',
         'people',
+        'payment_detail',
         'start_at'
     ];
 
@@ -47,7 +48,8 @@ class Booking extends Model
             'phone' => 'required|numeric|min:10',
             'address' => 'required|string|max:255',
             'people' => 'required|numeric',
-            'start_at' => 'required',
+            'payment_method' => 'required',
+            'start_at' => 'required'
         ];
     }
 
@@ -85,23 +87,14 @@ class Booking extends Model
 
         return DataTables::of($data)   
             ->addIndexColumn()
-            ->editColumn('status', function ($data) {
-                return view('action.switch', ['checked' => $data->status, 'id' => $data->id]);
+            ->editColumn('lastname', function ($data){ 
+                return $data->firstname . ' ' . $data->lastname;
             })
             ->addColumn('payment_status', function ($data) {
-                return view('action.switch', ['checked' => $data->payment_status, 'id' => $data->id]);
-            })
-            ->addColumn('action', function ($data) {
-                return view('action.action', [
-                    'id' => $data->id,
-                    // 'url_show' => null,
-                    'url_edit' => null,
-                    'edit_modal' => route('destinations.edit', $data->id),
-                    'url_destroy' => route('destinations.destroy', $data->id),
-                ]);
+                return view('action.payment_status', ['checked' => $data->payment_status, 'id' => $data->id]);
             })
 
-            ->rawColumns(['action', 'status'])
+            ->rawColumns(['status', 'payment_status'])
             ->make(true);
     }
 
@@ -117,17 +110,16 @@ class Booking extends Model
             'people' => $request->people,
             'start_at' => $request->start_at,
         ]);
-        $data['city'] = Ultilities::clearXSS($data['city']);
-        $data['state'] = Ultilities::clearXSS($data['state']);
-        $data['zip_code'] = Ultilities::clearXSS($data['zip_code']);
-        $data['country'] = Ultilities::clearXSS($data['country']);
-        $data['requirement'] = Ultilities::clearXSS($data['requirement']);
-        $data['payment_method'] = Ultilities::clearXSS($data['payment_method']);
-        $data['payment_status'] = Ultilities::clearXSS($data['payment_status']);
-        $data['status'] = Ultilities::clearXSS($data['status']);
-        $data['price'] = Ultilities::clearXSS($data['price']);
-        $data = $this->create($data);
+
+        $data['city'] = Ultilities::clearXSS($request->city);
+        $data['state'] = Ultilities::clearXSS($request->state);
+        $data['zip_code'] = Ultilities::clearXSS($request->zip_code);
+        $data['country'] = Ultilities::clearXSS($request->country);
+        $data['requirement'] = Ultilities::clearXSS($request->requirement);
+        $data['payment_method'] = Ultilities::clearXSS($request->payment_method);
+        $data['price'] = Ultilities::clearXSS($request->price);
+        $booking = $this->create($data);
         
-        return $data;
+        return $booking;
     }
 }

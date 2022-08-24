@@ -29,7 +29,7 @@ class Destination extends AppModel
 
     public function getDataAjax($request) 
     {
-        $data = $this->latest();
+        $data = $this->query();
 
         if(!empty($request->status)) {
             $data = $data->whereStatus($request->status);
@@ -45,8 +45,8 @@ class Destination extends AppModel
 
         return DataTables::of($data)   
             ->addIndexColumn()
-            ->addColumn('image', function ($data){
-                return '<img src="'.$data->img.'" alt="" width="120" height="120">';
+            ->editColumn('image', function ($data){
+                return '<img src="'.$data->img_url.'" alt="" width="120" height="120">';
             })
             ->editColumn('status', function ($data) {
                 return view('action.switch', ['checked' => $data->status, 'id' => $data->id]);
@@ -60,6 +60,7 @@ class Destination extends AppModel
                     'url_destroy' => route('destinations.destroy', $data->id),
                 ]);
             })
+            
             ->rawColumns(['action', 'image', 'status'])
             ->make(true);
     }

@@ -124,15 +124,17 @@ Route::get('/tours', [ClientController::class, 'tours'])->name('tours');
 Route::get('/{slug}/detail', [ClientController::class, 'detailTour'])->name('detailTour');
 
 Route::get('/{slug}/checkout', [PaymentController::class, 'checkout'])->name('checkout');
-Route::get('/{slug}/stripe-pay', [PaymentController::class, 'stripe'])->name('stripe');
-Route::post('/{slug}/stripe-pay', [PaymentController::class, 'stripe'])->name('stripe.post');
+Route::post('stripe-pay', [PaymentController::class, 'stripe'])->name('stripe');
+Route::post('store-stripe-pay/{id}', [PaymentController::class, 'stripePost'])->name('stripe.post');
+
+Route::get('/thanks/{id}', [PaymentController::class, 'paymentSuccess'])->name('paymentSuccess');
 
 Route::get('/contact', function() {
     return view('clients.contact');
 })->name('contact');
-Route::get('/thanks', function() {
-    return view('clients.thanks');
-})->name('thanks');
+// Route::get('/thanks/{id}', function() {
+//     return view('clients.thanks');
+// })->name('clients.thanks');
 Route::get('/layout', function () {
     return view('layouts.template');
 });

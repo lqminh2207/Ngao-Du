@@ -49,7 +49,7 @@
                         @foreach ($destinations as $item)
                             <div class="item">
                                 <a href="">
-                                    <img src="{{ $item->img }}" alt="image">
+                                    <img src="{{ $item->img_url }}" alt="image">
                                     <h5>{{ $item->title }}</h5>
                                     <span>{{ $item->tours_count }} experiences</span>
                                 </a>
@@ -65,7 +65,7 @@
         <div class="container">
             <div class="attractive-tour-header">
                 <h1>Attractive tour and interesting experiences</h1>
-                <a href="">View all</a>
+                <a href="{{ route('tours') }}">View all</a>
             </div>
             <div class="attractive-tour-detail">
                 @if (!empty($tours_attr) && count($tours_attr) > 0)
@@ -74,7 +74,7 @@
                             <div class="item">
                                 <a href="{{ route('detailTour', $item->slug) }}">
                                     <div class="attractive-tour-box-image">
-                                        <img src="{{ $item->img }}" alt="image">
+                                        <img src="{{ $item->img_url }}" alt="image">
                                         <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
                                         <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt="">{{ $item->countStar($item->id)['average'] }}</span>
                                     </div>
@@ -97,7 +97,7 @@
         <div class="container">
             <div class="traditional-tour-header">
                 <h1>Experience the traditional cultural beauties of Vietnam</h1>
-                <a href="">View all</a>
+                <a href="{{ route('tours') }}">View all</a>
             </div>
             <div class="traditional-tour-detail">
                 @if (!empty($tours_cul) && count($tours_cul) > 0)
@@ -106,7 +106,7 @@
                             <div class="item">
                                 <a href="{{ route('detailTour', $item->slug) }}">
                                 <div class="traditional-tour-box-image">
-                                    <img src="{{ $item->img }}" alt="image">
+                                    <img src="{{ $item->img_url }}" alt="image">
                                     <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
                                     <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt="">{{ $item->countStar($item->id)['average'] }}</span>
                                 </div>

@@ -32,8 +32,8 @@
                 <span>{{ $data->destination->title }}</span>
             </div>
             <div class="rating-tour">
-                <span class="vote-star"><img src="{{ 'icon/star.svg' }}" alt="">{{ $stars['average'] }}</span>
-                <p class="rating-nunber">128 reviews</p>
+                <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt="">{{ $stars['average'] }}</span>
+                <p class="rating-nunber">{{ $stars['total'] }} reviews</p>
             </div>
             <div class="row">
                 @if (!empty($data->galleries) && count($data->galleries) > 0)
@@ -43,8 +43,8 @@
                                 <ul class="splide__list">
                                     @foreach ($data->galleries as $item)
                                     <li class="splide__slide">
-                                            <img src="{{ $item->image }}">
-                                            <img class="marker" src="./icon/marker.svg" alt="">
+                                            <img src="{{ $item->img_url }}">
+                                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
                                         </li>
                                     @endforeach
                                 </ul>
@@ -55,7 +55,7 @@
                                 <ul class="splide__list">
                                     @foreach ($data->galleries as $item)
                                     <li class="splide__slide">
-                                        <img src="{{ $item->image }}">
+                                        <img src="{{ $item->img_url }}">
                                     </li>
                                     @endforeach
                                 </ul>
@@ -66,9 +66,7 @@
 
                 <div class="col-12 col-lg-5 col-xl-4 detail-price">
                     <div class="detail-price-box">
-                        <p>from <span>
-                            $<span class="tour-price">{{ $data->price }}</span>
-                        </span>                        
+                        <p>from <span>$<span class="tour-price">{{ $data->price }}</span></span>                        
                         </p>
                     </div>
                     <hr>
@@ -97,26 +95,26 @@
                                     </div>
                                     <select class="js-example-basic-single form-control" id="form-payment" name="people">
                                         <option value="" disabled selected>Numbers of people</option>
-                                        <option value="1">1 Adult</option>
-                                        <option value="2">2 Adults</option>
-                                        <option value="3">3 Adults</option>
-                                        <option value="4">4 Adults</option>
-                                        <option value="5">5 Adults</option>
-                                        <option value="6">6 Adults</option>
-                                        <option value="7">7 Adults</option>
-                                        <option value="8">8 Adults</option>
-                                        <option value="9">9 Adults</option>
-                                        <option value="10">10 Adults</option>
-                                        <option value="11">11 Adults</option>
-                                        <option value="12">12 Adults</option>
-                                        <option value="13">13 Adults</option>
-                                        <option value="14">14 Adults</option>
-                                        <option value="15">15 Adults</option>
-                                        <option value="16">16 Adults</option>
-                                        <option value="17">17 Adults</option>
-                                        <option value="18">18 Adults</option>
-                                        <option value="19">19 Adults</option>
-                                        <option value="20">20 Adults</option>
+                                        <option value="1">1 People</option>
+                                        <option value="2">2 People</option>
+                                        <option value="3">3 People</option>
+                                        <option value="4">4 People</option>
+                                        <option value="5">5 People</option>
+                                        <option value="6">6 People</option>
+                                        <option value="7">7 People</option>
+                                        <option value="8">8 People</option>
+                                        <option value="9">9 People</option>
+                                        <option value="10">10 People</option>
+                                        <option value="11">11 People</option>
+                                        <option value="12">12 People</option>
+                                        <option value="13">13 People</option>
+                                        <option value="14">14 People</option>
+                                        <option value="15">15 People</option>
+                                        <option value="16">16 People</option>
+                                        <option value="17">17 People</option>
+                                        <option value="18">18 People</option>
+                                        <option value="19">19 People</option>
+                                        <option value="20">20 People</option>
                                     </select>
                                 </div>
                                 <div class="total-price">
@@ -139,7 +137,7 @@
                             <a class="nav-link" id="addition-tab" data-toggle="tab" href="#addition" role="tab" aria-controls="addition" aria-selected="false">Additional Info</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review" aria-selected="false">Reviews(54)</a>
+                            <a class="nav-link" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review" aria-selected="false">Reviews({{ $stars['total'] }})</a>
                         </li>
                     </ul>
                     <hr>
@@ -262,6 +260,9 @@
                                 </div>
                             @endif
                         </div>
+                        {{-- @php
+                            dd($stars['six_star'])
+                        @endphp --}}
                         <div class="tab-pane fade" id="review" role="tabpanel" aria-labelledby="review-tab">
                             <div class="review-part">
                                 <div class="row rate-area">
@@ -379,9 +380,9 @@
                                 <div class="col-12 col-md-6 col-lg-4 item">
                                     <a href="{{ route('detailTour', $item->slug) }}">
                                         <div class="related-tour-box-image">
-                                            <img src="{{ $item->img }}" alt="image">
-                                            <img class="marker" src="./icon/marker.svg" alt="">
-                                            <span class="vote-star"><img src="{{ 'icon/star.svg' }}" alt="">{{ $item->countStar($item->id)['average'] }}</span>
+                                            <img src="{{ $item->img_url }}" alt="image">
+                                            <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
+                                            <span class="vote-star"><img src="{{ asset('icon/star.svg') }}" alt="">{{ $item->countStar($item->id)['average'] }}</span>
                                         </div>
                                     </a>
                                     <p><img src="{{ asset('icon/location-orange.svg') }}" alt="">{{ $item->destination->title }}</p>

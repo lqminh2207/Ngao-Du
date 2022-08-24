@@ -29,15 +29,12 @@ class ClientController extends Controller
     public function detailTour(Tour $tour, $slug)
     {
         $tour = $tour->getBySlug($slug);
-        // dd($tour);
-
+ 
         return view('clients.slug-tour', [
             'data' => $tour,
             'related_tours' => $tour->getRelatedTour($tour->id),
             'tour_reviews' => $tour->getReview($tour->id),
-            'stars' => $tour->countStar($tour->id)
+            'stars' => $tour->countStar()
         ]);
     }
-
-    
 }
