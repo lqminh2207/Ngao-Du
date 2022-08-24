@@ -5,5 +5,5 @@
     <button type="button" data-id="{{ $id }}" class="btn btn-xs btn-info">Unpaid</button>
 @endif
 @if ($checked == 3) 
-    <button type="button" data-id="{{ $id }}" class="btn btn-xs btn-success">Refund</button>
+    <button type="button" data-id="{{ $id }}" class="btn btn-xs btn-secondary">Refund</button>
 @endif

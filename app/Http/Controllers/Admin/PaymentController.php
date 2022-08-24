@@ -23,7 +23,6 @@ class PaymentController extends Controller
 
     public function checkout(Request $request, Tour $tour, $slug)
     {
-        // dd($request);
         $tour = $tour->getBySlug($slug);
 
         return view('clients.checkout', [
@@ -33,43 +32,45 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function stripe(Request $request)
+    public function stripe(Request $request, $id)
+    {
+        $bookingID = $request->id;
+
+        $booking = $this->booking->findById($id);
+
+        if($booking->payment_status != 2)
+        {
+            return redirect()->route('index');
+        }
+
+        $routePayment = route('stripe.post', $bookingID);
+        $routeSuccess = route('paymentSuccess', $bookingID);
+
+        return view('clients.payment', compact('routePayment', 'routeSuccess'));
+
+    }
+
+    public function storeStripe(Request $request)
     {
         $request->validate($this->booking->rules());
         $booking = $this->booking->saveData($request);
 
         $bookingID = $booking->id;
-        $routePayment = route('stripe.post', $bookingID);
-        $routeSuccess = route('paymentSuccess', $bookingID);
 
-        return view('clients.payment', compact('routePayment', 'routeSuccess'));
+        return redirect()->route('stripe', $bookingID);
     }
 
     public function stripePost(Request $request, $id)
     {
-        $booking = $this->booking->find($id);
+        $booking = $this->booking->findOrFail($id);
+
+        if (!($this->booking->where('payment_status', 2)->find($id))) {
+            \abort(404);
+        }
+
         $price = $booking->price * $booking->people;
 
         Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
-        
-        $stripe = new \Stripe\StripeClient(
-            env('STRIPE_SECRET')
-        );
-
-        // $stripe->paymentIntents->retrieve(
-        //     'pi_3LZVr1DlyvxhygrP0oCqHmAy',
-        //     []
-        // );
-
-        // $bookingDetail = $request->id;
-        // dd($bookingDetail);
-
-        // $stripe = new Stripe();
-        // $stripe = Stripe::make(env('STRIPE_SECRET'));
-
-        // $charge_id = Session::get('charge_id');
-        // $amount = Session::get('payment_amount');    
-        // $refund = $stripe->refunds->create($charge_id, 100 * $price, ['reason' => 'refund']);
 
         try {
             // retrieve JSON from POST body
@@ -103,10 +104,23 @@ class PaymentController extends Controller
 
     public function paymentSuccess(Request $request, $id)
     {
-        $booking = $this->booking->find($id);
+        $booking = $this->booking->findOrFail($id);
+
+        $stripe = new \Stripe\StripeClient(
+            env('STRIPE_SECRET')
+        );
+
+        $payment_detail_arr = json_decode($booking->payment_detail);
+        $payment_id = $payment_detail_arr->id;
+
+        $newPaymentIntent = $stripe->paymentIntents->retrieve(
+            $payment_id,
+            []
+        );
 
         if($request->redirect_status === "succeeded") 
         {
+            $input['payment_detail'] = json_encode($newPaymentIntent);
             $input['payment_status'] = 1;
             $booking->update($input);
         }
@@ -114,8 +128,22 @@ class PaymentController extends Controller
         return view('clients.thanks');
     }
 
-    public function stripeRefund()
+    public function stripeRefund(Request $request, $id)
     {
+        $booking = $this->booking->find($id);
+        $payment_detail_arr = json_decode($booking->payment_detail);
+
+        $charge_id = $payment_detail_arr->charges->data[0]->id;
         
+        $stripe = new \Stripe\StripeClient(
+            env('STRIPE_SECRET')
+        );
+
+        $refund = $stripe->refunds->create([
+            'charge' => $charge_id,
+        ]);
+
+        $input['payment_status'] = 3;
+        $booking->update($input);
     }
 }

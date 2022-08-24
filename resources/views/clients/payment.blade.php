@@ -5,9 +5,8 @@
         <meta name="description" content="A demo of a payment on Stripe" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="{{ asset('css/payment.css') }}">
-        <script src="https://js.stripe.com/v3/"></script>
     </head>
-
+    
     <body>
         <!-- Display a payment form -->
         <form id="payment-form">
@@ -19,10 +18,11 @@
             <span id="button-text">Pay now</span>
         </button>
         <div id="payment-message" class="hidden"></div>
-        </form>
+    </form>
     </body>
-  
-   <script>
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
         // This is your test publishable API key.
         const stripe = Stripe("pk_test_51LYKyXDlyvxhygrPCQRdZ3TJXRW8xsDXDdidFHd9coKM1nswwLt4aTFk8tMmYyLSkOfSrbLhRZxqAakEroYfEeZb00LYA9FE1A");
 
@@ -136,5 +136,5 @@
                 document.querySelector("#button-text").classList.remove("hidden");
             }
         }
-   </script>
+    </script>
 </html>

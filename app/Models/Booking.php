@@ -53,6 +53,11 @@ class Booking extends Model
         ];
     }
 
+    public function findById($id)
+    {
+        return $this->find($id);
+    }
+
     public function checkEmpty($data) 
     {
         return !empty($data) ? Ultilities::clearXSS($data) : '';
@@ -95,7 +100,7 @@ class Booking extends Model
             })
             ->addColumn('action', function ($data) {
                 return view('action.refund', [
-                    'url_refund' => 1
+                    'url_refund' => route('stripeRefund', $data->id)
                 ]);
             })
 
