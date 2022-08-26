@@ -23,8 +23,15 @@ class PlaceRequest extends FormRequest
      */
     public function rules()
     {
+        $title = 'required|max:255|unique:places,title,null,null,itinerary_id,'.$this->route('itineraries');
+
+        if($this->route('place') > 0)
+        {
+            $title = 'required|max:255|unique:places,title,'.$this->route('place').',id,itinerary_id,'.$this->route('itineraries');
+        }
+
         return [
-            'title' => 'required|max:255',
+            'title' => $title,
             'content' => 'required'
         ];
     }

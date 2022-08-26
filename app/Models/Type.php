@@ -17,6 +17,11 @@ class Type extends AppModel
         'title', 'status'
     ];
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
     public function getDataAjax($request) 
     {
         $search = $request->search;
@@ -61,11 +66,11 @@ class Type extends AppModel
     }
 
     public function updateData($request, $id) {
-        $type = $this->find($id);
+        $type = $this->findOrFail($id);
         $input = $request->only('title', 'status');
         $input['title'] = Ultilities::clearXSS($input['title']);
         $data = $type->update($input);
 
-        return $data;
+        return $this->find($id);
     }
 }

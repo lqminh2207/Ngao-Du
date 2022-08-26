@@ -43,7 +43,7 @@
                                 <ul class="splide__list">
                                     @foreach ($data->galleries as $item)
                                     <li class="splide__slide">
-                                            <img src="{{ $item->img_url }}">
+                                            <img src="{{ $item->image }}">
                                             <img class="marker" src="{{ asset('icon/marker.svg') }}" alt="">
                                         </li>
                                     @endforeach
@@ -55,7 +55,7 @@
                                 <ul class="splide__list">
                                     @foreach ($data->galleries as $item)
                                     <li class="splide__slide">
-                                        <img src="{{ $item->img_url }}">
+                                        <img src="{{ $item->image }}">
                                     </li>
                                     @endforeach
                                 </ul>

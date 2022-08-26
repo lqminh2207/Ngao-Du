@@ -24,12 +24,22 @@ class Place extends Model
         return $this->belongsTo(Itinerary::class, 'itinerary_id', 'id');
     }
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
+    public function getByItineraryId($tour_id, $itinerary_id)
+    {
+        return $this->where('itinerary_id', $itinerary_id)->get();
+    }
+
     public function getDataAjax($request)
     {
         $data = $this->latest();
 
-        if (!empty($request->itineraries_id)) {
-            $data = $data->whereItineraryId($request->itineraries_id);
+        if (!empty($request->itineraries)) {
+            $data = $data->whereItineraryId($request->itineraries);
         }
 
         if(!empty($request->search)) {
@@ -58,7 +68,7 @@ class Place extends Model
     public function saveData($request) 
     {
         $input = $request->only('itinerary_id', 'title', 'content');
-        $input['itinerary_id'] = !empty($request->itinerary_id) ? Ultilities::clearXSS($request->itinerary_id) : '';
+        $input['itinerary_id'] = !empty($request->itineraries) ? Ultilities::clearXSS($request->itineraries) : '';
         $input['title'] = !empty($request->title) ? Ultilities::clearXSS($request->title) : '';
         $input['content'] = !empty($request->content) ? $request->content : '';
         $data = $this->create($input);
@@ -66,13 +76,14 @@ class Place extends Model
         return $data;
     }
 
-    public function updateData($request, $id) 
+    public function updateData($request, $tour_id, $itinerary_id, $id) 
     {
-        $place = $this->find($request->id);
+        $place = $this->find($id);
+        $input['itinerary_id'] = !empty($request->itineraries) ? Ultilities::clearXSS($request->itineraries) : '';
         $input['title'] = !empty($request->title) ? Ultilities::clearXSS($request->title) : '';
         $input['content'] = !empty($request->content) ? $request->content : '';
         $data = $place->update($input);
 
-        return $data;
+        return $place;
     }
 }

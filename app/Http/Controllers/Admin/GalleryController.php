@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GalleryRequest;
 use App\Models\Gallery;
 use App\Models\Tour;
 use Exception;
@@ -26,9 +27,10 @@ class GalleryController extends Controller
         return view('admin.galleries.index', compact('tour', 'tour_id'));
     }
 
-    public function store(Request $request, $tour_id)
+    public function store(GalleryRequest $request, $tour_id)
     {
         try {
+            return $this->gallery->saveData($request, $tour_id);
         } catch (Exception $e) {
             // dd($e);
         }

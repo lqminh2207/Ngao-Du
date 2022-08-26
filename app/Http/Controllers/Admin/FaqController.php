@@ -51,9 +51,9 @@ class FaqController extends Controller
         ]);
     }
 
-    public function update(FaqRequest $request, $id)
+    public function update(FaqRequest $request, $tour_id, $id)
     {
-        $this->faq->updateData($request, $id);
+        $this->faq->updateData($request, $tour_id, $id);
 
         return response()->json([
             'message' => 'Faq successfuly updated'

@@ -25,6 +25,16 @@ class Faq extends AppModel
         return $this->belongsTo(Tour::class, 'tour_id', 'id');
     }
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
+    public function getByTourId($tour_id)
+    {
+        return $this->where('tour_id', $tour_id)->get();
+    }
+
     public function getDataAjax($request) {
         $data = $this->latest();
 
@@ -56,7 +66,7 @@ class Faq extends AppModel
             ->make(true);
     }
 
-    public function saveData($request, $id) 
+    public function saveData($request) 
     {
         $input = $request->only('tour_id', 'question', 'answer');
         $input['tour_id'] = !empty($request->tour_id) ? Ultilities::clearXSS($request->tour_id) : '';
@@ -67,13 +77,13 @@ class Faq extends AppModel
         return $data;
     }
 
-    public function updateData($request, $id) 
+    public function updateData($request, $tour_id, $id) 
     {
-        $faq = $this->find($request->id);
+        $faq = $this->find($id);
         $input['question'] = !empty($request->question) ? Ultilities::clearXSS($request->question) : '';
         $input['answer'] = !empty($request->answer) ? $request->answer : '';
         $data = $faq->update($input);
 
-        return $data;
+        return $faq;
     }
 }

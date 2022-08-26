@@ -191,7 +191,6 @@
             let itinerary_id = $('#edit_id').val();
             let url = '{{ route('itineraries.update', [$tour_id, ":id"]) }}';
             url = url.replace(':id', itinerary_id);
-            console.log(url);
 
             $.ajax({
                 type: 'POST',

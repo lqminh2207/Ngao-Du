@@ -29,9 +29,6 @@
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <ul>
-                                @php 
-dd($errors->all());
-                                @endphp
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
@@ -77,7 +74,7 @@ dd($errors->all());
                                         <div class="col-md-3 wrap-image" id="image{{ $tourImageItem->id }}"
                                             style="position: relative">
                                             <img class="image_item"
-                                                src="{{ $tourImageItem->img_url }}" alt=""
+                                                src="{{ $tourImageItem->image }}" alt=""
                                                 width="100%" height="auto" style="margin-top: 15px">
                                             <a  title="Delete" href="{{ route('galleries.destroy', [$tour->id, $tourImageItem->id]) }}"
                                                 id="delete-gallery"
@@ -177,7 +174,7 @@ dd($errors->all());
                                 for(let i = 0; i < myArray.length; i++) {
                                     string2 += myArray[i]+'/'
                                 }
-    
+                                console.log(response[i]);
                                 let string = `<div class="col-md-3 " id="image${response[i].id}" style="position: relative">`
                                     string += `<img class="image_item" src="${response[i].image}" alt="" width="100%" height="auto" style="margin-top: 15px">`
                                     string += `<a title="Delete" href="${string2}" id="delete-gallery" data-id="${response[i].id}" class="btn btn-danger waves-effect waves-light btn-sm btn-delete-gallary" style="position: absolute;top:15px;right:10px"><i class="fas fa-trash-alt"></i></a>`

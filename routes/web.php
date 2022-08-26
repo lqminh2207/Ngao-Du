@@ -60,19 +60,19 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::get('', [ItineraryController::class, 'show'])->name('show');
         Route::get('/create', [ItineraryController::class, 'create'])->name('create');
         Route::post('/store', [ItineraryController::class, 'store'])->name('store');
-        Route::get('/edit/{itinerary_id}', [ItineraryController::class, 'edit'])->name('edit');
-        Route::post('/update/{itinerary_id}', [ItineraryController::class, 'update'])->name('update');
+        Route::get('{itinerary}/edit', [ItineraryController::class, 'edit'])->name('edit');
+        Route::post('{itinerary}/update', [ItineraryController::class, 'update'])->name('update');
         Route::delete('/destroy', [ItineraryController::class, 'destroy'])->name('destroy');
     });
 
-    Route::group(['prefix' => 'tours/{tour_id}/itineraries/{itineraries_id}/places', 'as' => 'places.'], function () {
+    Route::group(['prefix' => 'tours/{tour_id}/itineraries/{itineraries}/places', 'as' => 'places.'], function () {
         Route::post('/getData', [PlaceController::class, 'getData'])->name('getData');
         Route::get('{id}/showInfo', [PlaceController::class, 'showInfo'])->name('showInfo');
         Route::get('', [PlaceController::class, 'show'])->name('show');
         Route::get('/create', [PlaceController::class, 'create'])->name('create');
         Route::post('/store', [PlaceController::class, 'store'])->name('store');
-        Route::get('/edit/{place_id}', [PlaceController::class, 'edit'])->name('edit');
-        Route::post('/update/{place_id}', [PlaceController::class, 'update'])->name('update');
+        Route::get('{place}/edit', [PlaceController::class, 'edit'])->name('edit');
+        Route::post('{place}/update', [PlaceController::class, 'update'])->name('update');
     });
     Route::delete('{itineraries_id}/destroy/{id}', [PlaceController::class, 'destroy'])->name('places.destroy');
 
@@ -82,8 +82,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
         Route::get('', [FaqController::class, 'show'])->name('show');
         Route::get('/create', [FaqController::class, 'create'])->name('create');
         Route::post('/store', [FaqController::class, 'store'])->name('store');
-        Route::get('/edit/{faq_id}', [FaqController::class, 'edit'])->name('edit');
-        Route::post('/update/{faq_id}', [FaqController::class, 'update'])->name('update');
+        Route::get('{faq_id}/edit', [FaqController::class, 'edit'])->name('edit');
+        Route::post('{faq_id}/update', [FaqController::class, 'update'])->name('update');
         Route::delete('/destroy', [FaqController::class, 'destroy'])->name('destroy');
         Route::post('/changeStatus', [FaqController::class, 'changeStatus'])->name('changeStatus');
     });
