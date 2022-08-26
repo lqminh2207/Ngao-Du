@@ -43,6 +43,11 @@ class Tour extends AppModel
         return $this->find($id); 
     }
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
     public function destination()
     {
         return $this->belongsTo(Destination::class, 'destination_id', 'id');
@@ -246,7 +251,7 @@ class Tour extends AppModel
 
         $data = $tour->update($data);
 
-        return $data;
+        return $this->find($id);
     }
 
     public function getImgUrlAttribute() {

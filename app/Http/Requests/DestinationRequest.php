@@ -30,8 +30,9 @@ class DestinationRequest extends FormRequest
         if($this->route('destination') > 0) {
             $title = 'required|string|max:100|unique:destinations,title,'.$this->route('destination');
             $slug = 'required|string|max:100|unique:destinations,slug,'.$this->route('destination');
-            $image = 'required|mimes:jpg,jpeg,png,gif,svg|max:10240'.$this->route('destination');
+            $image = 'mimes:jpg,jpeg,png,gif,svg|max:10240'.$this->route('destination');
         }
+
         return [
             'title' => $title,
             'slug' => $slug,

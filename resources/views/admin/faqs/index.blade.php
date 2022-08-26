@@ -168,7 +168,7 @@
                 url: url,
                 
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     $('#edit_id').val(response.faq.id)
                     $('#tour_id').val(response.faq.tour_id)
                     $('#question').val(response.faq.question)
@@ -266,7 +266,7 @@
                 },  
 
                 error: function(xhr) {
-                    console.log(xhr);
+                    // console.log(xhr);
                     if (xhr.responseJSON.errors) {
                         $('#errorQues').text(xhr.responseJSON.errors.question)
                         $('#errorAns').text(xhr.responseJSON.errors.answer)

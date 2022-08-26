@@ -14,10 +14,10 @@ class ItineraryController extends Controller
     protected $itinerary;
     protected $tour;
     
-    public function __construct(Itinerary $itinerary, Tour $tour)
+    public function __construct(Tour $tour, Itinerary $itinerary)
     {
-        $this->itinerary = $itinerary;
         $this->tour = $tour;
+        $this->itinerary = $itinerary;
     }
 
     public function show($tour_id)
@@ -54,10 +54,10 @@ class ItineraryController extends Controller
         }
     }
 
-    public function update(ItineraryRequest $request, $id)
+    public function update(ItineraryRequest $request, $tour_id, $id)
     {
         try{
-            $this->itinerary->updateData($request, $id);
+            $this->itinerary->updateData($request, $tour_id, $id);
 
             return response()->json([
                 'message' => 'Itinerary successfully updated'
@@ -67,9 +67,9 @@ class ItineraryController extends Controller
         }
     }
 
-    public function destroy($id)
+    public function destroy($tour_id, $id)
     {
-        $data = $this->itinerary->find($id);
+        $data = $this->itinerary->where('tour_id', $tour_id)->find($id);
 
         if(empty($data)) {
             \abort(404);

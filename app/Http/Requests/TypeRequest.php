@@ -24,9 +24,11 @@ class TypeRequest extends FormRequest
     public function rules()
     {
         $title = 'required|string|max:100|unique:types,title';
+
         if($this->route('type') > 0) {
             $title = 'required|string|max:100|unique:types,title,'.$this->route('type');
         }
+
         return [
             'title' => $title,
             'status' => 'required|numeric|between:1,2'

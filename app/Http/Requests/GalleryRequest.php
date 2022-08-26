@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ItineraryRequest extends FormRequest
+class GalleryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,15 +23,9 @@ class ItineraryRequest extends FormRequest
      */
     public function rules()
     {
-        $title = 'required|max:255|unique:itineraries,title,null,null,tour_id,'.$this->route('tour_id'); 
-
-        if ($this->route('itinerary') > 0)
-        {
-            $title = 'required|max:255|unique:itineraries,title,'.$this->route('itinerary').',id,tour_id,'.$this->route('tour_id');
-        }
-
         return [
-            'title' => $title
+            'image' => 'required|array',
+            'image.*' => 'mimes:jpg,jpeg,png,gif,svg|max:10240'
         ];
     }
 }

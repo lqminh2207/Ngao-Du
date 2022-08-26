@@ -18,6 +18,16 @@ class Itinerary extends AppModel
         'title'
     ];
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
+    public function getByTourId($tour_id)
+    {
+        return $this->where('tour_id', $tour_id)->get();
+    }
+
     public function tour()
     {
         return $this->belongsTo(Tour::class, 'tour_id', 'id');
@@ -69,13 +79,13 @@ class Itinerary extends AppModel
         return $data;
     }
 
-    public function updateData($request, $id)
+    public function updateData($request, $tour_id, $id)
     {
-        // $itinerary = $this->find($id); tai sao viet the nay lai ra tour_id
-        $itinerary = $this->find($request->id);
+        $itinerary = $this->find($id);
         $input['title'] =  !empty($request->title) ? Ultilities::clearXSS($request->title) : '';
         $data = $itinerary->update($input);   
+        // dd($itinerary);
 
-        return $data;
+        return $itinerary;
     }
 }

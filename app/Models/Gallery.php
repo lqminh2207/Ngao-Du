@@ -31,16 +31,11 @@ class Gallery extends Model
     public function saveData($request, $id) 
     {
         $data = [];
-
-        $request->validate([
-            'image' => 'required|array',
-            'image.*' => 'mimes:jpg,jpeg,png,gif,svg|max:10240'
-        ]);
-
+        
         if ($request->hasFile('image')) {
             foreach ($request->image as $fileItem) {
                 $dataImageDetail = $this->storageTraitUploadMutiple($fileItem, 'galleries');
-
+                
                 $data[] = $this->create([
                     'tour_id' => $id,
                     'image' => $dataImageDetail['file_path'],
@@ -51,7 +46,7 @@ class Gallery extends Model
         return $data;
     }
 
-    public function getImgUrlAttribute()
+    public function getImageAttribute()
     {
         return asset('storage/galleries/' . $this->getRawOriginal('image'));
     }

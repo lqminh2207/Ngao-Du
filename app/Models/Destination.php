@@ -27,6 +27,11 @@ class Destination extends AppModel
         return $this->hasMany(Tour::class);
     }
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
     public function getDataAjax($request) 
     {
         $data = $this->query();
@@ -80,8 +85,7 @@ class Destination extends AppModel
 
     public function updateData($request, $id) {
         $destination = $this->find($id);
-        // dd($request);
-        $input = $request->only(['title', 'slug', 'image', 'status']);
+        $input = $request->only(['title', 'slug', 'status']);
         $input['title'] = Ultilities::clearXSS($input['title']);
         $input['slug'] = Ultilities::clearXSS($input['slug']);
         $dataUploadImage = $this->storageTraitUpload($request, 'image', 'destinations');
@@ -90,7 +94,7 @@ class Destination extends AppModel
         }
         $data = $destination->update($input);
 
-        return $data;
+        return $this->find($id);
     }
 
     public function getImgUrlAttribute() 

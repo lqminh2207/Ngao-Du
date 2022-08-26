@@ -50,9 +50,9 @@ class PlaceController extends Controller
         ]);
     }
 
-    public function update(PlaceRequest $request, $id)
+    public function update(PlaceRequest $request, $tour_id, $itinerary_id, $id)
     {
-        $this->place->updateData($request, $id);
+        $this->place->updateData($request, $tour_id, $itinerary_id, $id);
 
         return response()->json([
             'message' => 'Place successfully updated'
