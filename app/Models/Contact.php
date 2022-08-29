@@ -31,6 +31,11 @@ class Contact extends AppModel
         ];
     }
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
     public function getDataAjax($request) 
     {
         $search = $request->search;

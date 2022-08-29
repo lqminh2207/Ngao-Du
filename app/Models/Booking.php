@@ -53,6 +53,11 @@ class Booking extends Model
         ];
     }
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
     public function findById($id)
     {
         return $this->find($id);

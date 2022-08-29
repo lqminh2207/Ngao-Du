@@ -96,6 +96,7 @@ class AdminController extends Controller
         $updatePassword = Admin::where('email', $request->email)->update(['password' => Hash::make($request->password)]);
 
         $passwordReset = DB::table('password_resets')->where([
+            'email' => $request->email
         ])->delete();   
 
         return redirect('login')->with('message', 'Your password has been changed!');

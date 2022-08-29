@@ -25,10 +25,20 @@ class Review extends AppModel
         return $this->belongsTo(Tour::class, 'tour_id', 'id');
     }
 
+    public function getAll()
+    {
+        return $this->all();
+    }
+
+    public function getByTourId($tour_id)
+    {
+        return $this->where('tour_id', $tour_id)->get();
+    }
+
     public function rules() 
     {
         return [
-            'star' => 'required',
+            'star' => 'required|numeric|min:1|max:5',
             'message' => 'required|string|max:500',
         ];
     }

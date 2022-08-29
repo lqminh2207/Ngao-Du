@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\Admin as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\HasApiTokens;
+use Laravel\Passport\HasApiTokens;
 
 class Admin extends Authenticatable
 {
@@ -64,7 +64,7 @@ class Admin extends Authenticatable
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ];
-        
+
         return $this->create($data);
     }
 }

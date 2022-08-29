@@ -21,7 +21,6 @@ use App\Http\Controllers\LogoutController;
 Auth::routes();
 Route::post('sign-in', [AdminController::class, 'executeSignIn'])->name('execute.signin');
 Route::post('reset-pass', [AdminController::class, 'sendResetLinkEmail'])->name('exe.forgot');
-Route::get('register-2', [AdminController::class, 'formRegister'])->name('form.register');
 Route::post('register-2', [AdminController::class, 'register2'])->name('register2');
 Route::get('reset/{token}', [AdminController::class, 'formReset'])->name('form.reset');
 Route::post('reset', [AdminController::class, 'Reset'])->name('reset');

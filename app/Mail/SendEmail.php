@@ -28,7 +28,7 @@ class SendEmail extends Mailable
      * Build the message.
      *
      * @return $this
-     */
+     */ 
     public function build()
     {
         $details = $this->details;
