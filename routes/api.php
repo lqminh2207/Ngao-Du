@@ -1,11 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\AdminController;
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\TourController;
 use App\Http\Controllers\Api\DestinationController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\ItineraryController;
 use App\Http\Controllers\Api\PlaceController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\TypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,12 +25,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::post('sign-in', [AdminController::class, 'executeSignIn'])->name('execute.signin');
+Route::post('register-2', [AdminController::class, 'register2'])->name('register2');
+Route::post('reset/{token}', [AdminController::class, 'formReset'])->name('form.reset');
+Route::post('reset-pass', [AdminController::class, 'sendResetLinkEmail'])->name('exe.forgot');
 
 // Route::middleware('auth:api')->group( function () {
 Route::middleware('api')->group( function () {
+    Route::post('logout', [AdminController::class, 'logout'])->name('logout');
+
     Route::resource('types', TypeController::class)->only(['store', 'update', 'destroy']);
     Route::group(['prefix' => 'types', 'as' => 'types.'], function () {
         Route::get('/{id}/show', [TypeController::class, 'show'])->name('show');
@@ -77,7 +88,30 @@ Route::middleware('api')->group( function () {
         Route::post('/store', [GalleryController::class, 'store'])->name('store');
         Route::delete('{id}/destroy', [GalleryController::class, 'destroy'])->name('destroy');
     });
+
+    Route::post('reviews/getAllData', [ReviewController::class, 'getAllData'])->name('getAllData');
+    Route::group(['prefix' => 'tours/{tour_id}/reviews', 'as' => 'reviews.'], function () {
+        Route::post('/getData', [ReviewController::class, 'getData'])->name('getData');
+        Route::delete('{review}/destroy', [ReviewController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::resource('contacts', ContactController::class)->only(['store', 'destroy']);
+    Route::group(['prefix' => 'contacts', 'as' => 'contacts.'], function () {
+        Route::post('getAllData', [ContactController::class, 'getAllData'])->name('getAllData');
+    });
+
+    Route::group(['prefix' => 'bookings', 'as' => 'bookings.'], function () {
+        Route::post('getAllData', [BookingController::class, 'getAllData'])->name('getAllData');
+    });
 });
+
+Route::post('tours/{tour_id}/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
+Route::post('contacts/store', [ContactController::class, 'store'])->name('contacts.store');
+
+Route::post('storeData', [BookingController::class, 'storeStripe'])->name('storeStripe');
+Route::post('store-stripe-pay/{id}', [BookingController::class, 'stripePost'])->name('stripe.post');
+Route::post('/thanks/{id}', [BookingController::class, 'paymentSuccess'])->name('paymentSuccess');
+Route::post('refund/{id}', [BookingController::class, 'stripeRefund'])->name('stripeRefund');
 
 // Route::get('types', [TypeController::class, 'index']);
 // Route::post('types/store', [TypeController::class, 'store']);

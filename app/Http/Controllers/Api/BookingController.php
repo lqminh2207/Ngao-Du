@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\Tour;
 use Error;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Stripe;
 
-class PaymentController extends Controller
+class BookingController extends Controller
 {
-    protected $booking;
     protected $tour;
+    protected $booking;
 
     public function __construct(Tour $tour, Booking $booking)
     {
@@ -21,32 +21,14 @@ class PaymentController extends Controller
         $this->booking = $booking;
     }
 
-    public function checkout(Request $request, Tour $tour, $slug)
+    public function getAllData()
     {
-        $tour = $tour->getBySlug($slug);
+        $data = $this->booking->getAll();
 
-        return view('clients.checkout', [
-            'data' => $tour,
-            'date' => $request->date,
-            'people' => $request->people
+        return response()->json([
+            'data' => BookingResource::collection($data),
+            'message' => 'Booking retrieved successfully.'
         ]);
-    }
-
-    public function stripe(Request $request, $id)
-    {
-        $bookingID = $request->id;
-
-        $booking = $this->booking->findById($id);
-
-        if($booking->payment_status != 2)
-        {
-            return redirect()->route('index');
-        }
-
-        $routePayment = route('stripe.post', $bookingID);
-        $routeSuccess = route('paymentSuccess', $bookingID);
-
-        return view('clients.payment', compact('routePayment', 'routeSuccess'));
     }
 
     public function storeStripe(Request $request)
@@ -54,9 +36,10 @@ class PaymentController extends Controller
         $request->validate($this->booking->rules());
         $booking = $this->booking->saveData($request);
 
-        $bookingID = $booking->id;
-
-        return redirect()->route('stripe', $bookingID);
+        return response()->json([
+            'data' => new BookingResource($booking),
+            'message' => 'Booking created successfully.'
+        ]);
     }
 
     public function stripePost(Request $request, $id)
@@ -72,11 +55,9 @@ class PaymentController extends Controller
         Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
         try {
-            // retrieve JSON from POST body
             $jsonStr = file_get_contents('php://input');
             $jsonObj = json_decode($jsonStr);
         
-            // Create a PaymentIntent with amount and currency
             $paymentIntent = \Stripe\PaymentIntent::create([
                 'amount' => 100 * $price,
                 'currency' => 'usd',
@@ -92,10 +73,15 @@ class PaymentController extends Controller
                 'clientSecret' => $paymentIntent->client_secret,
             ];
  
-            return json_encode($output);
+            return response([
+                'data' => new BookingResource($booking),
+                'message' => 'Stored payment information successfully.'
+            ]);
         } catch (Error $e) {
             http_response_code(500);
-            return json_encode(['error' => $e->getMessage()]);
+            return response([
+                'message' => 'Stored payment information failed.'
+            ], 500);
         }
           
         return back();
@@ -122,9 +108,14 @@ class PaymentController extends Controller
             $input['payment_detail'] = json_encode($newPaymentIntent);
             $input['payment_status'] = 1;
             $booking->update($input);
+            return response()->json([
+                'message' => 'Payment was successfully processed!'
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Payment failed!'
+            ]);
         }
-        
-        return view('clients.thanks');
     }
 
     public function stripeRefund(Request $request, $id)
@@ -144,5 +135,9 @@ class PaymentController extends Controller
 
         $input['payment_status'] = 3;
         $booking->update($input);
+
+        return response()->json([
+            'message' => 'Refunded successfully'
+        ]);
     }
 }
