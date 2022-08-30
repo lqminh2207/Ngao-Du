@@ -122,13 +122,20 @@ Route::get('/', [ClientController::class, 'index'])->name('index');
 Route::get('/tours', [ClientController::class, 'tours'])->name('tours');
 Route::get('/{slug}/detail', [ClientController::class, 'detailTour'])->name('detailTour');
 
+Route::post('optionsPayment', [PaymentController::class, 'optionsPayment'])->name('optionsPayment');
+
 Route::get('/{slug}/checkout', [PaymentController::class, 'checkout'])->name('checkout');
 Route::get('stripe-pay/{id}', [PaymentController::class, 'stripe'])->name('stripe');
-Route::post('storeData/', [PaymentController::class, 'storeStripe'])->name('storeStripe');
+Route::post('storeData', [PaymentController::class, 'storeStripe'])->name('storeStripe');
 Route::post('store-stripe-pay/{id}', [PaymentController::class, 'stripePost'])->name('stripe.post');
 Route::get('/thanks/{id}', [PaymentController::class, 'paymentSuccess'])->name('paymentSuccess');
 Route::post('/refund/{id}', [PaymentController::class, 'stripeRefund'])->name('stripeRefund');
 
+Route::get('momoPayment/{id}', [PaymentController::class, 'momoPayment'])->name('momoPayment');
+
+Route::get('/thanks', function() {
+    return view('clients.thanks');
+})->name('thanks');
 Route::get('/contact', function() {
     return view('clients.contact');
 })->name('contact');

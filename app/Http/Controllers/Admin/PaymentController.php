@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Tour;
 use Error;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Stripe;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -32,6 +32,23 @@ class PaymentController extends Controller
         ]);
     }
 
+    public function optionsPayment(Request $request)
+    {
+        $request->validate($this->booking->rules());
+        $payment_method = $request->payment_method;
+        $booking = $this->booking->saveData($request);
+
+        $bookingID = $booking->id;
+
+        if($payment_method == 1) {
+            return redirect()->route('stripe', $bookingID);
+        } else if($payment_method == 2) {
+            return redirect()->route('momoPayment', $bookingID)->withInput();
+        } else {
+            return back();
+        }
+    }
+
     public function stripe(Request $request, $id)
     {
         $bookingID = $request->id;
@@ -47,16 +64,6 @@ class PaymentController extends Controller
         $routeSuccess = route('paymentSuccess', $bookingID);
 
         return view('clients.payment', compact('routePayment', 'routeSuccess'));
-    }
-
-    public function storeStripe(Request $request)
-    {
-        $request->validate($this->booking->rules());
-        $booking = $this->booking->saveData($request);
-
-        $bookingID = $booking->id;
-
-        return redirect()->route('stripe', $bookingID);
     }
 
     public function stripePost(Request $request, $id)
@@ -85,7 +92,9 @@ class PaymentController extends Controller
                 ],
             ]);
 
+            $input['orderId'] = $paymentIntent->id;
             $input['payment_detail'] = json_encode($paymentIntent);
+
             $booking->update($input);
             
             $output = [
@@ -105,26 +114,78 @@ class PaymentController extends Controller
     {
         $booking = $this->booking->findOrFail($id);
 
-        $stripe = new \Stripe\StripeClient(
-            env('STRIPE_SECRET')
-        );
-
-        $payment_detail_arr = json_decode($booking->payment_detail);
-        $payment_id = $payment_detail_arr->id;
-
-        $newPaymentIntent = $stripe->paymentIntents->retrieve(
-            $payment_id,
-            []
-        );
-
-        if($request->redirect_status === "succeeded") 
+        if($booking->payment_method == STRIPE) 
         {
-            $input['payment_detail'] = json_encode($newPaymentIntent);
-            $input['payment_status'] = 1;
-            $booking->update($input);
+            $stripe = new \Stripe\StripeClient(
+                env('STRIPE_SECRET')
+            );
+    
+            $payment_detail_arr = json_decode($booking->payment_detail);
+            $payment_id = $payment_detail_arr->id;
+    
+            $newPaymentIntent = $stripe->paymentIntents->retrieve(
+                $payment_id,
+                []
+            );
+    
+            if($request->redirect_status === "succeeded") 
+            {
+                $input['payment_detail'] = json_encode($newPaymentIntent);
+                $input['payment_status'] = 1;
+                $booking->update($input);
+            }
+            
+            return view('clients.thanks');
         }
-        
-        return view('clients.thanks');
+
+        if($booking->payment_method == MOMO)
+        {
+            $booking = $this->booking->findOrFail($id);
+            $orderIdReal = $booking->orderId;
+            // dd($bookingID, $request);
+
+            $input['payment_detail'] = json_encode($request->all());
+            $booking->update($input);
+
+            $accessKey = 'klm05TvNBzhg7h7j';
+            $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa'; //Put your secret key in there
+
+            if (!empty($_GET)) {
+                $partnerCode = $request->partnerCode;
+                $orderId = $request->orderId;
+                $requestId = $request->requestId;
+                $amount = $request->amount;	
+                $orderInfo = $request->orderInfo;
+                $orderType = $request->orderType;
+                $transId = $request->transId;
+                $resultCode = $request->resultCode;
+                $message = $request->message;
+                $payType = $request->payType;
+                $responseTime = $request->responseTime;
+                $extraData = $request->extraData;
+                $m2signature = $request->signature; //MoMo signature
+                //Checksum
+                $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&message=" . $message . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
+                    "&orderType=" . $orderType . "&partnerCode=" . $partnerCode . "&payType=" . $payType . "&requestId=" . $requestId . "&responseTime=" . $responseTime .
+                    "&resultCode=" . $resultCode . "&transId=" . $transId;
+
+                $partnerSignature = hash_hmac("sha256", $rawHash, $secretKey);
+                // dd($m2signature, $partnerSignature); 
+            
+                if (($m2signature == $partnerSignature) && ($orderIdReal == $orderId)) {
+                    if ($resultCode == '0') {
+                        $input['payment_status'] = 1;
+                        $booking->update($input);
+
+                        return view('clients.thanks');
+                    } else {
+                        echo $message;
+                    }
+                } else {
+                    echo 'This transaction could be hacked, please check your signature and returned signature';
+                }
+            }
+        }
     }
 
     public function stripeRefund(Request $request, $id)
@@ -144,5 +205,84 @@ class PaymentController extends Controller
 
         $input['payment_status'] = 3;
         $booking->update($input);
+    }
+
+    public function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data))
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
+    }
+
+    public function momoPayment(Request $request, $id)
+    {
+        $booking = $this->booking->findOrFail($id);
+        // dd($booking);
+        $bookingID = $request->id;
+
+        $price = $booking->price * $booking->people;
+
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+
+        // $partnerCode = 'MOMOPMXV20220829';
+        // $accessKey = 'LwsPU85egmX8oIzo';
+        // $secretKey = 'zGjxmVeNMkw0jp4bFUxPx3wdPsJKl4wP';
+        $orderInfo = "Thanh toán qua MoMo";
+        $amount = $price * 24000;
+        $orderId = time() ."";
+        $redirectUrl =  route('paymentSuccess', $id);
+        $ipnUrl = "api/momo/result";
+        $extraData = json_encode(['bookingID' => $bookingID]);
+
+        $requestId = time() . "";
+        $requestType = "captureWallet";
+        $extraData = "";
+
+        // dd($extraData);
+        //before sign HMAC SHA256 signature
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+        $data = array(
+            'partnerCode' => $partnerCode,
+            'partnerName' => "Test",
+            "storeId" => "MomoTestStore",
+            'requestId' => $requestId,
+            'amount' => $amount,
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
+            'extraData' => $extraData,
+            'requestType' => $requestType,
+            'signature' => $signature
+        );
+        $result = $this->execPostRequest($endpoint, json_encode($data));    
+        $jsonResult = json_decode($result, true);  // decode json
+        // dd($result, $jsonResult);
+
+        $input['orderId'] = $orderId;
+        $input['payment_detail'] = $jsonResult;
+        $booking->update($input);
+        
+        $url = $jsonResult['payUrl'];
+
+        return redirect($url);
     }
 }

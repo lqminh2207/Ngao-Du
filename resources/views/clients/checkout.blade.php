@@ -9,7 +9,7 @@
             <div class="row">
                 <div class="col-12 col-md-7"><hr></div>
             </div>
-            <form action="{{ route('storeStripe') }}" method="POST" class="form" id="form-1">
+            <form action="{{ route('optionsPayment') }}" method="POST" class="form" id="form-1">
                 <div class="row">
                     <div id="second-position-type2" class="col-12 col-md-12 col-lg-7 col-xl-7 booking-detail">
                         <h4>Traveler Details</h4>
@@ -122,8 +122,8 @@
                                 </div>
                                 <div class="checkbox-align">
                                     <input type="radio" id="data1" name="payment_method" value="2" class="big">
-                                    <label for="">Paypal</label><br>
-                                    <img class="paypal" src="{{ asset('image/checkout/paypal') }}.png" alt="paypal">
+                                    <label for="">Momo</label><br>
+                                    <img class="paypal" src="{{ asset('image/checkout/momo.png') }}" alt="momo">
                                 </div>
                                 <div class="checkbox-align">
                                     <input type="radio" id="data1" name="payment_method" value="3" class="big">
@@ -235,4 +235,3 @@
         })
     </script>
 @endpush
-

@@ -28,6 +28,7 @@ class Booking extends Model
         'payment_method',
         'payment_status',
         'status',
+        'orderId',
         'price',
         'people',
         'payment_detail',
@@ -47,7 +48,7 @@ class Booking extends Model
             'email' => 'required|string|regex:/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/|max:150',
             'phone' => 'required|numeric|min:10',
             'address' => 'required|string|max:255',
-            'people' => 'required|numeric',
+            'people' => 'required|numeric|min:1|max:20',
             'payment_method' => 'required',
             'start_at' => 'required'
         ];
