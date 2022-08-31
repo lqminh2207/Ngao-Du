@@ -126,12 +126,14 @@ Route::post('optionsPayment', [PaymentController::class, 'optionsPayment'])->nam
 
 Route::get('/{slug}/checkout', [PaymentController::class, 'checkout'])->name('checkout');
 Route::get('stripe-pay/{id}', [PaymentController::class, 'stripe'])->name('stripe');
-Route::post('storeData', [PaymentController::class, 'storeStripe'])->name('storeStripe');
 Route::post('store-stripe-pay/{id}', [PaymentController::class, 'stripePost'])->name('stripe.post');
 Route::get('/thanks/{id}', [PaymentController::class, 'paymentSuccess'])->name('paymentSuccess');
 Route::post('/refund/{id}', [PaymentController::class, 'stripeRefund'])->name('stripeRefund');
 
 Route::get('momoPayment/{id}', [PaymentController::class, 'momoPayment'])->name('momoPayment');
+
+Route::get('zaloPayment/{id}', [PaymentController::class, 'zaloPayment'])->name('zaloPayment');
+Route::post('/ipnMomo/{id}', [PaymentController::class, 'ipnMomo'])->name('ipnMomo');
 
 Route::get('/thanks', function() {
     return view('clients.thanks');

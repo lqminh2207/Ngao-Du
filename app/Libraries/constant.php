@@ -14,3 +14,4 @@ define('DURATION_TWO_DAY', 2);
 
 define('STRIPE', 1);
 define('MOMO', 2);
+define('ZALOPAY', 3);

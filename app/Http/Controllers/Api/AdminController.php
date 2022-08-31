@@ -116,6 +116,7 @@ class AdminController extends Controller
 
     public function logout(Request $request)
     {
+        // dd($request->user()->token());
         $request->user()->token()->revoke();
 
         return response()->json([

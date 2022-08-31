@@ -35,7 +35,7 @@ Route::post('reset/{token}', [AdminController::class, 'formReset'])->name('form.
 Route::post('reset-pass', [AdminController::class, 'sendResetLinkEmail'])->name('exe.forgot');
 
 // Route::middleware('auth:api')->group( function () {
-Route::middleware('api')->group( function () {
+Route::middleware('auth:api')->group( function () {
     Route::post('logout', [AdminController::class, 'logout'])->name('logout');
 
     Route::resource('types', TypeController::class)->only(['store', 'update', 'destroy']);
@@ -108,10 +108,13 @@ Route::middleware('api')->group( function () {
 Route::post('tours/{tour_id}/reviews/store', [ReviewController::class, 'store'])->name('reviews.store');
 Route::post('contacts/store', [ContactController::class, 'store'])->name('contacts.store');
 
-Route::post('storeData', [BookingController::class, 'storeStripe'])->name('storeStripe');
+Route::post('optionsPayment', [BookingController::class, 'optionsPayment'])->name('optionsPayment');
+Route::get('stripe-pay/{id}', [BookingController::class, 'stripe'])->name('stripe');
 Route::post('store-stripe-pay/{id}', [BookingController::class, 'stripePost'])->name('stripe.post');
-Route::post('/thanks/{id}', [BookingController::class, 'paymentSuccess'])->name('paymentSuccess');
-Route::post('refund/{id}', [BookingController::class, 'stripeRefund'])->name('stripeRefund');
+Route::get('/thanks/{id}', [BookingController::class, 'paymentSuccess'])->name('paymentSuccess');
+Route::post('/refund/{id}', [BookingController::class, 'stripeRefund'])->name('stripeRefund');
 
-// Route::get('types', [TypeController::class, 'index']);
-// Route::post('types/store', [TypeController::class, 'store']);
+Route::get('momoPayment/{booking}', [BookingController::class, 'momoPayment'])->name('momoPayment');
+
+Route::get('zaloPayment/{id}', [BookingController::class, 'zaloPayment'])->name('zaloPayment');
+Route::post('/ipnMomo/{bookingID}', [BookingController::class, 'ipnMomo'])->name('ipnMomo');

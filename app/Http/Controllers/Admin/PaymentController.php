@@ -43,9 +43,9 @@ class PaymentController extends Controller
         if($payment_method == 1) {
             return redirect()->route('stripe', $bookingID);
         } else if($payment_method == 2) {
-            return redirect()->route('momoPayment', $bookingID)->withInput();
+            return redirect()->route('momoPayment', $bookingID);
         } else {
-            return back();
+            return redirect()->route('zaloPayment', $bookingID);
         }
     }
 
@@ -140,51 +140,17 @@ class PaymentController extends Controller
 
         if($booking->payment_method == MOMO)
         {
-            $booking = $this->booking->findOrFail($id);
-            $orderIdReal = $booking->orderId;
-            // dd($bookingID, $request);
-
-            $input['payment_detail'] = json_encode($request->all());
-            $booking->update($input);
-
-            $accessKey = 'klm05TvNBzhg7h7j';
-            $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa'; //Put your secret key in there
-
-            if (!empty($_GET)) {
-                $partnerCode = $request->partnerCode;
-                $orderId = $request->orderId;
-                $requestId = $request->requestId;
-                $amount = $request->amount;	
-                $orderInfo = $request->orderInfo;
-                $orderType = $request->orderType;
-                $transId = $request->transId;
-                $resultCode = $request->resultCode;
-                $message = $request->message;
-                $payType = $request->payType;
-                $responseTime = $request->responseTime;
-                $extraData = $request->extraData;
-                $m2signature = $request->signature; //MoMo signature
-                //Checksum
-                $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&message=" . $message . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
-                    "&orderType=" . $orderType . "&partnerCode=" . $partnerCode . "&payType=" . $payType . "&requestId=" . $requestId . "&responseTime=" . $responseTime .
-                    "&resultCode=" . $resultCode . "&transId=" . $transId;
-
-                $partnerSignature = hash_hmac("sha256", $rawHash, $secretKey);
-                // dd($m2signature, $partnerSignature); 
-            
-                if (($m2signature == $partnerSignature) && ($orderIdReal == $orderId)) {
-                    if ($resultCode == '0') {
-                        $input['payment_status'] = 1;
-                        $booking->update($input);
-
-                        return view('clients.thanks');
-                    } else {
-                        echo $message;
-                    }
-                } else {
-                    echo 'This transaction could be hacked, please check your signature and returned signature';
-                }
+            $result = $this->checkPaymentMomo($request, $booking);
+            if($result['success']){
+                return view('clients.thanks');
             }
+
+            echo $result['message'];
+        }
+
+        if($booking->payment_method == ZALOPAY)
+        {
+            
         }
     }
 
@@ -247,7 +213,7 @@ class PaymentController extends Controller
         $amount = $price * 24000;
         $orderId = time() ."";
         $redirectUrl =  route('paymentSuccess', $id);
-        $ipnUrl = "api/momo/result";
+        $ipnUrl = route('ipnMomo', $id);
         $extraData = json_encode(['bookingID' => $bookingID]);
 
         $requestId = time() . "";
@@ -284,5 +250,67 @@ class PaymentController extends Controller
         $url = $jsonResult['payUrl'];
 
         return redirect($url);
+    }
+
+    public function ipnMomo(Request $request, $id)
+    {
+        $booking = $this->booking->findOrFail($id);
+        $result = $this->checkPaymentMomo($request, $booking);
+
+        return response()->json($result);
+    }
+
+    public function checkPaymentMomo(Request $request, $booking)
+    {
+        $orderIdReal = $booking->orderId;
+
+        $input['payment_detail'] = json_encode($request->all());
+        $booking->update($input);
+
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa'; //Put your secret key in there
+
+        $partnerCode = $request->partnerCode;
+        $orderId = $request->orderId;
+        $requestId = $request->requestId;
+        $amount = $request->amount;	
+        $orderInfo = $request->orderInfo;
+        $orderType = $request->orderType;
+        $transId = $request->transId;
+        $resultCode = $request->resultCode;
+        $message = $request->message;
+        $payType = $request->payType;
+        $responseTime = $request->responseTime;
+        $extraData = $request->extraData;
+        $m2signature = $request->signature; //MoMo signature
+
+        //Checksum
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&message=" . $message . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
+            "&orderType=" . $orderType . "&partnerCode=" . $partnerCode . "&payType=" . $payType . "&requestId=" . $requestId . "&responseTime=" . $responseTime .
+            "&resultCode=" . $resultCode . "&transId=" . $transId;
+
+        $partnerSignature = hash_hmac("sha256", $rawHash, $secretKey);
+
+        $success = false;
+        if (($m2signature == $partnerSignature) && ($orderIdReal == $orderId)) {
+            if ($resultCode == '0') {
+                $input['payment_status'] = 1;
+                $booking->update($input);
+
+                $success = true;
+            } 
+        } else {
+            $message = 'This transaction could be hacked, please check your signature and returned signature';
+        }
+
+        return [
+            'success' => $success,
+            'message' => $message
+        ];
+    }
+
+    public function zaloPayment(Request $request) 
+    {
+
     }
 }

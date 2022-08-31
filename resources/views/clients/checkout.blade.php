@@ -123,11 +123,12 @@
                                 <div class="checkbox-align">
                                     <input type="radio" id="data1" name="payment_method" value="2" class="big">
                                     <label for="">Momo</label><br>
-                                    <img class="paypal" src="{{ asset('image/checkout/momo.png') }}" alt="momo">
+                                    <img class="momo" style="width:45px;" src="{{ asset('image/checkout/momo.png') }}" alt="momo">
                                 </div>
                                 <div class="checkbox-align">
                                     <input type="radio" id="data1" name="payment_method" value="3" class="big">
-                                    <label for="">Pay in cash</label><br>
+                                    <label for="">ZaloPay</label><br>
+                                    <img class="zalopay" style="width:80px;" src="{{ asset('image/checkout/zalopay.png') }}" alt="zalopay">
                                 </div>
                             </div>
                             @if ($errors->has('payment_method'))
